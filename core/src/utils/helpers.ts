@@ -9,7 +9,7 @@ export const componentOnReady = (el: any, callback: any) => {
   if (el.componentOnReady) {
     el.componentOnReady().then(callback);
   } else {
-    callback();
+    callback(el);
   }
 }
 
