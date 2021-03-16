@@ -79,7 +79,17 @@
           'Open Modal',
           {
             text: 'Delete',
-            role: 'destructive',
+            role: 'cancel',
+            handler: () => {
+              console.log('first')
+            }
+          },
+          {
+            text: 'delete 2',
+            role: 'cancel',
+            handler: () => {
+              console.log('second')
+            }
           },
           'Cancel',
         ]

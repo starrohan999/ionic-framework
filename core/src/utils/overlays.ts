@@ -317,7 +317,7 @@ export const dismiss = async (
 
   try {
     // Overlay contents should not be clickable during dismiss
-    overlay.el.style.setProperty('pointer-events', 'none');
+    //overlay.el.style.setProperty('pointer-events', 'none');
     overlay.willDismiss.emit({ data, role });
     const mode = getIonMode(overlay);
     const animationBuilder = (overlay.leaveAnimation)

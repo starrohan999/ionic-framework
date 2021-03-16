@@ -12,6 +12,30 @@ import { iosLeaveAnimation } from './animations/ios.leave';
 import { mdEnterAnimation } from './animations/md.enter';
 import { mdLeaveAnimation } from './animations/md.leave';
 
+const CoreDelegate = () => {
+  let Component: any;
+  const attachViewToDom = (parentElement: HTMLElement, component: any, componentProps: any = {}, classes?: string[]) => {
+    Component = parentElement.closest('ion-popover');
+    const app = document.querySelector('ion-app');
+
+    if (app && Component) {
+      app.appendChild(Component);
+      classes;
+      componentProps;
+    }
+
+    return Component;
+  }
+
+  const removeViewFromDom = () => {
+    Component && Component.remove();
+    return Promise.resolve();
+  }
+
+  return { attachViewToDom, removeViewFromDom }
+}
+
+
 /**
  * @virtualProp {"ios" | "md"} mode - The mode determines which platform styles to use.
  */
@@ -33,7 +57,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
   @Element() el!: HTMLIonPopoverElement;
 
   /** @internal */
-  @Prop() delegate?: FrameworkDelegate;
+  @Prop() delegate?: FrameworkDelegate = CoreDelegate() as any;
 
   /** @internal */
   @Prop() overlayIndex!: number;
@@ -210,7 +234,8 @@ export class Popover implements ComponentInterface, OverlayInterface {
         class={{
           ...getClassMap(this.cssClass),
           [mode]: true,
-          'popover-translucent': this.translucent
+          'popover-translucent': this.translucent,
+          'popover-not-interactive': !this.presented
         }}
         onIonPopoverDidPresent={onLifecycle}
         onIonPopoverWillPresent={onLifecycle}
@@ -225,7 +250,9 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
         <div class="popover-wrapper ion-overlay-wrapper">
           <div class="popover-arrow"></div>
-          <div class="popover-content"></div>
+          <div class="popover-content">
+            <slot></slot>
+          </div>
         </div>
 
         <div tabindex="0"></div>

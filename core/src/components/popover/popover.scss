@@ -39,6 +39,10 @@
   z-index: $z-index-overlay;
 }
 
+:host(.popover-not-interactive) {
+  pointer-events: none;
+}
+
 :host(.overlay-hidden) {
   display: none;
 }
