@@ -14,13 +14,33 @@
     import { popoverController } from '../../../../dist/ionic/index.esm.js';
     window.popoverController = popoverController;
   </script>
+  <style>
+  ion-popover#my-popover {
+    --offset-x: 100px;
+    --offset-y: 100px;
+  }
+  </style>
 <body>
   <ion-button id="liam">Click Me</ion-button>
-  <ion-popover trigger="liam" size="cover">
-    <profile-page></profile-page>
+  <ion-popover trigger="liam" id="my-popover">
+    <ion-content>
+      mY inner popover stuff
+      <ion-item button id="nested-one">
+        <ion-label>More...</ion-label>
+      </ion-item>
+      <ion-popover trigger="nested-one">
+        This is my nested popover
+        <ion-item button id="nested-two">
+          <ion-label>More...</ion-label>
+        </ion-item>
+        <ion-popover trigger="nested-two">
+          This is my nested popover again
+        </ion-popover>
+      </ion-popover>
+    </ion-content>
   </ion-popover>
 
-  <br />
+  <!-- <br />
 
   <ion-button id="liam2">Hover Over Me</ion-button>
   <ion-popover trigger="liam2" size="cover" trigger-action="hover">
@@ -32,7 +52,7 @@
   <ion-button id="liam3">Right Click Me</ion-button>
   <ion-popover trigger="liam3" size="cover" trigger-action="context-menu">
     <profile-page></profile-page>
-  </ion-popover>
+  </ion-popover> -->
 
   <script>
     class ProfilePage extends HTMLElement {

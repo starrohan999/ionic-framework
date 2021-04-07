@@ -87,18 +87,18 @@ export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation =>
     contentEl.style.bottom = POPOVER_IOS_BODY_PADDING + '%';
   }
 
-  arrowEl.style.top = arrowCSS.top + 'px';
-  arrowEl.style.left = arrowCSS.left + 'px';
+  arrowEl.style.top = `calc(${arrowCSS.top}px + var(--offset-y))`;
+  arrowEl.style.left = `calc(${arrowCSS.left}px + var(--offset-y))`;
 
-  contentEl.style.top = popoverCSS.top + 'px';
-  contentEl.style.left = popoverCSS.left + 'px';
+  contentEl.style.top = `calc(${popoverCSS.top}px + var(--offset-y))`;
+  contentEl.style.left = `calc(${popoverCSS.left}px + var(--offset-x))`;
 
   if (checkSafeAreaLeft) {
-    contentEl.style.left = `calc(${popoverCSS.left}px + var(--ion-safe-area-left, 0px))`;
+    contentEl.style.left = `calc(${popoverCSS.left}px + var(--ion-safe-area-left, 0px) + var(--offset-x))`;
   }
 
   if (checkSafeAreaRight) {
-    contentEl.style.left = `calc(${popoverCSS.left}px - var(--ion-safe-area-right, 0px))`;
+    contentEl.style.left = `calc(${popoverCSS.left}px - var(--ion-safe-area-right, 0px) + var(--offset-x))`;
   }
 
   contentEl.style.transformOrigin = originY + ' ' + originX;

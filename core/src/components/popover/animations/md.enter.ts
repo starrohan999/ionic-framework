@@ -103,8 +103,8 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
   contentAnimation
     .addElement(contentEl)
     .beforeStyles({
-      'top': `${popoverCSS.top}px`,
-      'left': `${popoverCSS.left}px`,
+      'top': `calc(${popoverCSS.top}px + var(--offset-y))`,
+      'left': `calc(${popoverCSS.left}px + var(--offset-x))`,
       'transform-origin': `${originY} ${originX}`
     })
     .fromTo('transform', 'scale(0.001)', 'scale(1)');

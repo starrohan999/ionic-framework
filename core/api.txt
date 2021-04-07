@@ -852,6 +852,8 @@ ion-popover,css-prop,--max-height
 ion-popover,css-prop,--max-width
 ion-popover,css-prop,--min-height
 ion-popover,css-prop,--min-width
+ion-popover,css-prop,--offset-x
+ion-popover,css-prop,--offset-y
 ion-popover,css-prop,--width
 
 ion-progress-bar,shadow

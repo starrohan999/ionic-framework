@@ -332,7 +332,6 @@ export class Popover implements ComponentInterface, OverlayInterface {
         onIonDismiss={this.onDismiss}
         onIonBackdropTap={this.onBackdropTap}
       >
-        <slot name="trigger"></slot>
         <ion-backdrop tappable={this.backdropDismiss} visible={this.showBackdrop}/>
 
         <div tabindex="0"></div>
