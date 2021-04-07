@@ -1708,7 +1708,7 @@ export namespace Components {
         /**
           * Present the popover overlay after it has been created.
          */
-        "present": () => Promise<void>;
+        "present": (event?: MouseEvent | undefined) => Promise<void>;
         /**
           * If `true`, a backdrop will be displayed behind the popover.
          */
@@ -1717,6 +1717,7 @@ export namespace Components {
           * If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
          */
         "translucent": boolean;
+        "trigger": string | undefined;
     }
     interface IonProgressBar {
         /**
@@ -5047,6 +5048,7 @@ declare namespace LocalJSX {
           * If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
          */
         "translucent"?: boolean;
+        "trigger"?: string | undefined;
     }
     interface IonProgressBar {
         /**

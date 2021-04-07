@@ -12,6 +12,29 @@ import { iosLeaveAnimation } from './animations/ios.leave';
 import { mdEnterAnimation } from './animations/md.enter';
 import { mdLeaveAnimation } from './animations/md.leave';
 
+const CoreDelegate = () => {
+  let Component: any;
+  const attachViewToDom = (parentElement: HTMLElement, component: any, componentProps: any = {}, classes?: string[]) => {
+    Component = parentElement.closest('ion-popover');
+    const app = document.querySelector('ion-app') || document.body;
+
+    if (app && Component) {
+      app.appendChild(Component);
+      classes;
+      componentProps;
+    }
+
+    return Component;
+  }
+
+  const removeViewFromDom = () => {
+    Component && Component.remove();
+    return Promise.resolve();
+  }
+
+  return { attachViewToDom, removeViewFromDom }
+}
+
 /**
  * @virtualProp {"ios" | "md"} mode - The mode determines which platform styles to use.
  */
@@ -33,7 +56,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
   @Element() el!: HTMLIonPopoverElement;
 
   /** @internal */
-  @Prop() delegate?: FrameworkDelegate;
+  @Prop() delegate?: FrameworkDelegate = CoreDelegate();
 
   /** @internal */
   @Prop() overlayIndex!: number;
@@ -99,6 +122,8 @@ export class Popover implements ComponentInterface, OverlayInterface {
    */
   @Prop() animated = true;
 
+  @Prop() trigger: string | undefined;
+
   /**
    * Emitted after the popover has presented.
    */
@@ -127,7 +152,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
    * Present the popover overlay after it has been created.
    */
   @Method()
-  async present(): Promise<void> {
+  async present(event?: MouseEvent): Promise<void> {
     if (this.presented) {
       return;
     }
@@ -141,7 +166,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
     };
     this.usersElement = await attachComponent(this.delegate, container, this.component, ['popover-viewport', (this.el as any)['s-sc']], data);
     await deepReady(this.usersElement);
-    return present(this, 'popoverEnter', iosEnterAnimation, mdEnterAnimation, this.event);
+    return present(this, 'popoverEnter', iosEnterAnimation, mdEnterAnimation, this.event || event);
   }
 
   /**
@@ -199,6 +224,20 @@ export class Popover implements ComponentInterface, OverlayInterface {
     }
   }
 
+  componentDidLoad() {
+    const { trigger } = this;
+    if (trigger) {
+      const triggerEl = document.getElementById(trigger);
+      console.log(triggerEl, trigger)
+      if (triggerEl) {
+        triggerEl.addEventListener('click', (ev) => {
+          console.log('clicky',ev)
+          this.present(ev);
+        })
+      }
+    }
+  }
+
   render() {
     const mode = getIonMode(this);
     const { onLifecycle } = this;
@@ -213,7 +252,8 @@ export class Popover implements ComponentInterface, OverlayInterface {
         class={{
           ...getClassMap(this.cssClass),
           [mode]: true,
-          'popover-translucent': this.translucent
+          'popover-translucent': this.translucent,
+          'overlay-hidden': true
         }}
         onIonPopoverDidPresent={onLifecycle}
         onIonPopoverWillPresent={onLifecycle}
@@ -228,7 +268,9 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
         <div class="popover-wrapper ion-overlay-wrapper">
           <div class="popover-arrow"></div>
-          <div class="popover-content"></div>
+          <div class="popover-content">
+            <slot></slot>
+          </div>
         </div>
 
         <div tabindex="0"></div>

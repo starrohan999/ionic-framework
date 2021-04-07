@@ -15,31 +15,12 @@
     window.popoverController = popoverController;
   </script>
 <body>
-  <button id="basic-popover" onclick="presentPopover({ component: 'profile-page', event: event })">Show Popover</button>
-  <button onclick="presentPopover({ component: 'translucent-page', event: event, translucent: true })">Show Translucent Popover</button>
-  <button color="secondary" onclick="presentPopover({ component: 'list-page', event: event })">Show Long List Popover</button>
-  <button color="danger" onclick="presentPopover({ component: 'profile-page' })">No Event Popover</button>
-
-  <style>
-    body > button {
-      display: block;
-      clear: both;
-      width: 100%;
-      padding: 12px 8px;
-      font-size: 1em;
-      background: #f8f8f8;
-      border: 1px solid #eee;
-      border-radius: 4px;
-      margin-bottom: 8px;
-    }
-  </style>
+  <ion-button id="liam">Click to Open Popover</ion-button>
+  <ion-popover trigger="liam">
+    <profile-page></profile-page>
+  </ion-popover>
 
   <script>
-    async function presentPopover(opts) {
-      const popover = await popoverController.create(opts);
-      await popover.present();
-    }
-
     class ProfilePage extends HTMLElement {
       constructor() {
         super();
@@ -61,46 +42,6 @@
     }
 
     customElements.define('profile-page', ProfilePage);
-
-    class ListPage extends HTMLElement {
-      constructor() {
-        super();
-      }
-
-      connectedCallback() {
-        let items = '';
-        for (var i = 0; i < 30; i++) {
-          items += '<ion-item><ion-label>Item ' + i + '</ion-label></ion-item>';
-        }
-
-        this.innerHTML = `
-          <ion-content>
-            <ion-list>
-              <ion-list-header><ion-label>Ionic</ion-label></ion-list-header>
-              ` + items + `
-            </ion-list>
-          </ion-content>
-        `;
-      }
-    }
-
-    customElements.define('list-page', ListPage);
-
-    class TranslucentPage extends HTMLElement {
-      constructor() {
-        super();
-      }
-
-      connectedCallback() {
-        this.innerHTML = `
-          <div class="ion-padding">
-            <h1>Translucent Popover</h1>
-          </div>
-        `;
-      }
-    }
-
-    customElements.define('translucent-page', TranslucentPage);
   </script>
 </body>
 </html>
