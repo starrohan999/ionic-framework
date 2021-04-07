@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { AccordionGroupChangeEventDetail, ActionSheetButton, AlertButton, AlertInput, AnimationBuilder, AutocompleteTypes, CheckboxChangeEventDetail, Color, ComponentProps, ComponentRef, DatetimeChangeEventDetail, DatetimeOptions, DomRenderFn, FooterHeightFn, FrameworkDelegate, HeaderFn, HeaderHeightFn, InputChangeEventDetail, ItemHeightFn, ItemRenderFn, ItemReorderEventDetail, MenuChangeEventDetail, NavComponent, NavComponentWithProps, NavOptions, OverlayEventDetail, PickerButton, PickerColumn, RadioGroupChangeEventDetail, RangeChangeEventDetail, RangeValue, RefresherEventDetail, RouteID, RouterDirection, RouterEventDetail, RouterOutletOptions, RouteWrite, ScrollBaseDetail, ScrollDetail, SearchbarChangeEventDetail, SegmentButtonLayout, SegmentChangeEventDetail, SelectChangeEventDetail, SelectInterface, SelectPopoverOption, Side, SpinnerTypes, StyleEventDetail, SwipeGestureHandler, TabBarChangedEventDetail, TabButtonClickEventDetail, TabButtonLayout, TextareaChangeEventDetail, TextFieldTypes, ToastButton, ToggleChangeEventDetail, TransitionDoneFn, TransitionInstruction, ViewController } from "./interface";
+import { AccordionGroupChangeEventDetail, ActionSheetButton, AlertButton, AlertInput, AnimationBuilder, AutocompleteTypes, CheckboxChangeEventDetail, Color, ComponentProps, ComponentRef, DatetimeChangeEventDetail, DatetimeOptions, DomRenderFn, FooterHeightFn, FrameworkDelegate, HeaderFn, HeaderHeightFn, InputChangeEventDetail, ItemHeightFn, ItemRenderFn, ItemReorderEventDetail, MenuChangeEventDetail, NavComponent, NavComponentWithProps, NavOptions, OverlayEventDetail, PickerButton, PickerColumn, PopoverSize, RadioGroupChangeEventDetail, RangeChangeEventDetail, RangeValue, RefresherEventDetail, RouteID, RouterDirection, RouterEventDetail, RouterOutletOptions, RouteWrite, ScrollBaseDetail, ScrollDetail, SearchbarChangeEventDetail, SegmentButtonLayout, SegmentChangeEventDetail, SelectChangeEventDetail, SelectInterface, SelectPopoverOption, Side, SpinnerTypes, StyleEventDetail, SwipeGestureHandler, TabBarChangedEventDetail, TabButtonClickEventDetail, TabButtonLayout, TextareaChangeEventDetail, TextFieldTypes, ToastButton, ToggleChangeEventDetail, TransitionDoneFn, TransitionInstruction, ViewController } from "./interface";
 import { IonicSafeString } from "./utils/sanitization";
 import { NavigationHookCallback } from "./components/route/route-interface";
 import { SelectCompareFn } from "./components/select/select-interface";
@@ -1713,6 +1713,7 @@ export namespace Components {
           * If `true`, a backdrop will be displayed behind the popover.
          */
         "showBackdrop": boolean;
+        "size": PopoverSize;
         /**
           * If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
          */
@@ -5044,6 +5045,7 @@ declare namespace LocalJSX {
           * If `true`, a backdrop will be displayed behind the popover.
          */
         "showBackdrop"?: boolean;
+        "size"?: PopoverSize;
         /**
           * If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
          */

@@ -18,3 +18,5 @@ export interface PopoverOptions<T extends ComponentRef = ComponentRef> {
   enterAnimation?: AnimationBuilder;
   leaveAnimation?: AnimationBuilder;
 }
+
+export type PopoverSize = 'cover' | 'auto';

@@ -370,7 +370,9 @@ export default defineComponent({
 | `leaveAnimation`  | --                 | Animation to use when the popover is dismissed.                                                                                                                                                                        | `((baseEl: any, opts?: any) => Animation) \| undefined` | `undefined` |
 | `mode`            | `mode`             | The mode determines which platform styles to use.                                                                                                                                                                      | `"ios" \| "md"`                                         | `undefined` |
 | `showBackdrop`    | `show-backdrop`    | If `true`, a backdrop will be displayed behind the popover.                                                                                                                                                            | `boolean`                                               | `true`      |
+| `size`            | `size`             |                                                                                                                                                                                                                        | `"auto" \| "cover"`                                     | `'auto'`    |
 | `translucent`     | `translucent`      | If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility). | `boolean`                                               | `false`     |
+| `trigger`         | `trigger`          |                                                                                                                                                                                                                        | `string \| undefined`                                   | `undefined` |
 
 
 ## Events
@@ -415,7 +417,7 @@ Type: `Promise<OverlayEventDetail<T>>`
 
 
 
-### `present() => Promise<void>`
+### `present(event?: MouseEvent | undefined) => Promise<void>`
 
 Present the popover overlay after it has been created.
 

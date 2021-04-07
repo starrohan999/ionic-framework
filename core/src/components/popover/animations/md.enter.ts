@@ -1,10 +1,12 @@
 import { Animation } from '../../../interface';
 import { createAnimation } from '../../../utils/animation/animation';
+import { getPopoverDimensions } from '../utils';
 
 /**
  * Md Popover Enter Animation
  */
-export const mdEnterAnimation = (baseEl: HTMLElement, ev?: Event): Animation => {
+export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => {
+  const { event: ev, size, trigger } = opts;
   const POPOVER_MD_BODY_PADDING = 12;
   const doc = (baseEl.ownerDocument as any);
   const isRTL = doc.dir === 'rtl';
@@ -13,9 +15,11 @@ export const mdEnterAnimation = (baseEl: HTMLElement, ev?: Event): Animation => 
   let originX = isRTL ? 'right' : 'left';
 
   const contentEl = baseEl.querySelector('.popover-content') as HTMLElement;
-  const contentDimentions = contentEl.getBoundingClientRect();
-  const contentWidth = contentDimentions.width;
-  const contentHeight = contentDimentions.height;
+  const { contentWidth, contentHeight } = getPopoverDimensions(size, contentEl, trigger);
+
+  if (size === 'cover') {
+    baseEl.style.setProperty('--width', `${contentWidth}px`);
+  }
 
   const bodyWidth = doc.defaultView.innerWidth;
   const bodyHeight = doc.defaultView.innerHeight;

@@ -1,7 +1,7 @@
 import { Component, ComponentInterface, Element, Event, EventEmitter, Host, Method, Prop, h } from '@stencil/core';
 
 import { getIonMode } from '../../global/ionic-global';
-import { AnimationBuilder, ComponentProps, ComponentRef, FrameworkDelegate, OverlayEventDetail, OverlayInterface } from '../../interface';
+import { AnimationBuilder, ComponentProps, ComponentRef, FrameworkDelegate, OverlayEventDetail, OverlayInterface, PopoverSize } from '../../interface';
 import { attachComponent, detachComponent } from '../../utils/framework-delegate';
 import { BACKDROP, dismiss, eventMethod, prepareOverlay, present } from '../../utils/overlays';
 import { getClassMap } from '../../utils/theme';
@@ -22,6 +22,7 @@ const CoreDelegate = () => {
       app.appendChild(Component);
       classes;
       componentProps;
+      component;
     }
 
     return Component;
@@ -49,6 +50,7 @@ const CoreDelegate = () => {
 export class Popover implements ComponentInterface, OverlayInterface {
 
   private usersElement?: HTMLElement;
+  private triggerEl?: HTMLElement | null;
 
   presented = false;
   lastFocus?: HTMLElement;
@@ -123,6 +125,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
   @Prop() animated = true;
 
   @Prop() trigger: string | undefined;
+  @Prop() size: PopoverSize = 'auto';
 
   /**
    * Emitted after the popover has presented.
@@ -166,7 +169,11 @@ export class Popover implements ComponentInterface, OverlayInterface {
     };
     this.usersElement = await attachComponent(this.delegate, container, this.component, ['popover-viewport', (this.el as any)['s-sc']], data);
     await deepReady(this.usersElement);
-    return present(this, 'popoverEnter', iosEnterAnimation, mdEnterAnimation, this.event || event);
+    return present(this, 'popoverEnter', iosEnterAnimation, mdEnterAnimation, {
+      event: this.event || event,
+      size: this.size,
+      trigger: this.triggerEl
+    });
   }
 
   /**
@@ -227,13 +234,9 @@ export class Popover implements ComponentInterface, OverlayInterface {
   componentDidLoad() {
     const { trigger } = this;
     if (trigger) {
-      const triggerEl = document.getElementById(trigger);
-      console.log(triggerEl, trigger)
+      const triggerEl = this.triggerEl = document.getElementById(trigger);
       if (triggerEl) {
-        triggerEl.addEventListener('click', (ev) => {
-          console.log('clicky',ev)
-          this.present(ev);
-        })
+        triggerEl.addEventListener('click',ev => this.present(ev))
       }
     }
   }

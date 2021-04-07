@@ -1,17 +1,22 @@
 import { Animation } from '../../../interface';
 import { createAnimation } from '../../../utils/animation/animation';
-
+import { getPopoverDimensions } from '../utils';
 /**
  * iOS Popover Enter Animation
  */
-export const iosEnterAnimation = (baseEl: HTMLElement, ev?: Event): Animation => {
+export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => {
+  const { event: ev, size, trigger } = opts;
   let originY = 'top';
   let originX = 'left';
 
   const contentEl = baseEl.querySelector('.popover-content') as HTMLElement;
-  const contentDimentions = contentEl.getBoundingClientRect();
-  const contentWidth = contentDimentions.width;
-  const contentHeight = contentDimentions.height;
+  const { contentWidth, contentHeight } = getPopoverDimensions(size, contentEl, trigger);
+
+  if (size === 'cover') {
+    baseEl.style.setProperty('--width', `${contentWidth}px`);
+  }
+
+  // TODO revise this to account for new positioning APIs
 
   const bodyWidth = (baseEl.ownerDocument as any).defaultView.innerWidth;
   const bodyHeight = (baseEl.ownerDocument as any).defaultView.innerHeight;

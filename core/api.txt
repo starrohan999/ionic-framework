@@ -832,11 +832,13 @@ ion-popover,prop,keyboardClose,boolean,true,false,false
 ion-popover,prop,leaveAnimation,((baseEl: any, opts?: any) => Animation) | undefined,undefined,false,false
 ion-popover,prop,mode,"ios" | "md",undefined,false,false
 ion-popover,prop,showBackdrop,boolean,true,false,false
+ion-popover,prop,size,"auto" | "cover",'auto',false,false
 ion-popover,prop,translucent,boolean,false,false,false
+ion-popover,prop,trigger,string | undefined,undefined,false,false
 ion-popover,method,dismiss,dismiss(data?: any, role?: string | undefined) => Promise<boolean>
 ion-popover,method,onDidDismiss,onDidDismiss<T = any>() => Promise<OverlayEventDetail<T>>
 ion-popover,method,onWillDismiss,onWillDismiss<T = any>() => Promise<OverlayEventDetail<T>>
-ion-popover,method,present,present() => Promise<void>
+ion-popover,method,present,present(event?: MouseEvent | undefined) => Promise<void>
 ion-popover,event,ionPopoverDidDismiss,OverlayEventDetail<any>,true
 ion-popover,event,ionPopoverDidPresent,void,true
 ion-popover,event,ionPopoverWillDismiss,OverlayEventDetail<any>,true
