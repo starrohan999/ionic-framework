@@ -1674,8 +1674,9 @@ export namespace Components {
           * Dismiss the popover overlay after it has been presented.
           * @param data Any data to emit in the dismiss events.
           * @param role The role of the element that is dismissing the popover. For example, 'cancel' or 'backdrop'.
+          * @param dismissParentPopover If `true`, dismissing this popover will also dismiss a parent popover if this popover is nested. Defaults to `true`.
          */
-        "dismiss": (data?: any, role?: string | undefined) => Promise<boolean>;
+        "dismiss": (data?: any, role?: string | undefined, dismissParentPopover?: boolean) => Promise<boolean>;
         /**
           * Animation to use when the popover is presented.
          */

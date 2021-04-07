@@ -53,6 +53,8 @@ export class Popover implements ComponentInterface, OverlayInterface {
   private triggerEl?: HTMLElement | null;
   private triggerCallback?: any;
   private triggerEvent?: string;
+  private parentPopover?: HTMLIonPopoverElement | null;
+  private popoverId = `ion-popover-${popoverIds++}`;
 
   presented = false;
   lastFocus?: HTMLElement;
@@ -185,6 +187,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
   }
 
   componentDidLoad() {
+    this.parentPopover = this.el.closest(`ion-popover:not(#${this.popoverId})`) as HTMLIonPopoverElement | null;
     this.configureTriggerInteraction();
   }
 
@@ -218,9 +221,15 @@ export class Popover implements ComponentInterface, OverlayInterface {
    *
    * @param data Any data to emit in the dismiss events.
    * @param role The role of the element that is dismissing the popover. For example, 'cancel' or 'backdrop'.
+   * @param dismissParentPopover If `true`, dismissing this popover will also dismiss
+   * a parent popover if this popover is nested. Defaults to `true`.
    */
   @Method()
-  async dismiss(data?: any, role?: string): Promise<boolean> {
+  async dismiss(data?: any, role?: string, dismissParentPopover = true): Promise<boolean> {
+    if (dismissParentPopover && this.parentPopover) {
+      this.parentPopover.dismiss(data, role, dismissParentPopover)
+    }
+
     const shouldDismiss = await dismiss(this, data, role, 'popoverLeave', iosLeaveAnimation, mdLeaveAnimation, this.event);
     if (shouldDismiss) {
       await detachComponent(this.delegate, this.usersElement);
@@ -305,12 +314,11 @@ export class Popover implements ComponentInterface, OverlayInterface {
     }
 
     triggerEl.addEventListener(this.triggerEvent, this.triggerCallback);
-    console.log(triggerEl, this.triggerEvent, this.triggerCallback)
   }
 
   render() {
     const mode = getIonMode(this);
-    const { onLifecycle } = this;
+    const { onLifecycle, popoverId } = this;
     return (
       <Host
         aria-modal="true"
@@ -319,6 +327,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
         style={{
           zIndex: `${20000 + this.overlayIndex}`,
         }}
+        id={popoverId}
         class={{
           ...getClassMap(this.cssClass),
           [mode]: true,
@@ -355,3 +364,5 @@ const LIFECYCLE_MAP: any = {
   'ionPopoverWillDismiss': 'ionViewWillLeave',
   'ionPopoverDidDismiss': 'ionViewDidLeave',
 };
+
+let popoverIds = 0;
