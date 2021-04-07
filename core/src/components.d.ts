@@ -1713,11 +1713,17 @@ export namespace Components {
           * If `true`, a backdrop will be displayed behind the popover.
          */
         "showBackdrop": boolean;
+        /**
+          * Describes how to calculate the popover width. If `'cover'`, the popover width will match the width of the trigger. If `'auto'`, the popover width will be determined by the content in the popover. Defaults to `'auto'`.
+         */
         "size": PopoverSize;
         /**
           * If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
          */
         "translucent": boolean;
+        /**
+          * An ID corresponding to the trigger element that causes the popover to open. Use the `trigger-action` property to customize the interaction that results in the popover opening.
+         */
         "trigger": string | undefined;
     }
     interface IonProgressBar {
@@ -5045,11 +5051,17 @@ declare namespace LocalJSX {
           * If `true`, a backdrop will be displayed behind the popover.
          */
         "showBackdrop"?: boolean;
+        /**
+          * Describes how to calculate the popover width. If `'cover'`, the popover width will match the width of the trigger. If `'auto'`, the popover width will be determined by the content in the popover. Defaults to `'auto'`.
+         */
         "size"?: PopoverSize;
         /**
           * If `true`, the popover will be translucent. Only applies when the mode is `"ios"` and the device supports [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter#Browser_compatibility).
          */
         "translucent"?: boolean;
+        /**
+          * An ID corresponding to the trigger element that causes the popover to open. Use the `trigger-action` property to customize the interaction that results in the popover opening.
+         */
         "trigger"?: string | undefined;
     }
     interface IonProgressBar {

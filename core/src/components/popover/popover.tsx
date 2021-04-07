@@ -124,7 +124,21 @@ export class Popover implements ComponentInterface, OverlayInterface {
    */
   @Prop() animated = true;
 
+  /**
+   * An ID corresponding to the trigger element that
+   * causes the popover to open. Use the `trigger-action`
+   * property to customize the interaction that results in
+   * the popover opening.
+   */
   @Prop() trigger: string | undefined;
+
+  /**
+   * Describes how to calculate the popover width.
+   * If `'cover'`, the popover width will match the width of the trigger.
+   * If `'auto'`, the popover width will be determined by the content in
+   * the popover.
+   * Defaults to `'auto'`.
+   */
   @Prop() size: PopoverSize = 'auto';
 
   /**
@@ -236,7 +250,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
     if (trigger) {
       const triggerEl = this.triggerEl = document.getElementById(trigger);
       if (triggerEl) {
-        triggerEl.addEventListener('click',ev => this.present(ev))
+        triggerEl.addEventListener('click', ev => this.present(ev))
       }
     }
   }
