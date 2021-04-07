@@ -1,4 +1,4 @@
-import { Component, ComponentInterface, Element, Event, EventEmitter, Host, Method, Prop, h } from '@stencil/core';
+import { Component, ComponentInterface, Element, Event, EventEmitter, Host, Method, Prop, h, Watch } from '@stencil/core';
 
 import { getIonMode } from '../../global/ionic-global';
 import { AnimationBuilder, ComponentProps, ComponentRef, FrameworkDelegate, OverlayEventDetail, OverlayInterface, PopoverSize } from '../../interface';
@@ -51,6 +51,8 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
   private usersElement?: HTMLElement;
   private triggerEl?: HTMLElement | null;
+  private triggerCallback?: any;
+  private triggerEvent?: string;
 
   presented = false;
   lastFocus?: HTMLElement;
@@ -125,6 +127,18 @@ export class Popover implements ComponentInterface, OverlayInterface {
   @Prop() animated = true;
 
   /**
+   * Describes what kind of interaction with the trigger that
+   * should cause the popover to open. Does not apply when the `trigger`
+   * property is `undefined`.
+   * If `'click'`, the popover will be presented when the trigger is left clicked.
+   * If `'hover'`, the popover will be presented when a pointer hovers over the trigger.
+   * If `'context-menu'`, the popover will be presented when the trigger is right
+   * clicked on desktop and long pressed on mobile. This will also prevent your
+   * device's normal context menu from appearing.
+   */
+  @Prop() triggerAction: 'click' | 'hover' | 'context-menu' = 'click';
+
+  /**
    * An ID corresponding to the trigger element that
    * causes the popover to open. Use the `trigger-action`
    * property to customize the interaction that results in
@@ -137,9 +151,14 @@ export class Popover implements ComponentInterface, OverlayInterface {
    * If `'cover'`, the popover width will match the width of the trigger.
    * If `'auto'`, the popover width will be determined by the content in
    * the popover.
-   * Defaults to `'auto'`.
    */
   @Prop() size: PopoverSize = 'auto';
+
+  @Watch('trigger')
+  @Watch('triggerAction')
+  onTriggerChange() {
+    this.configureTriggerInteraction();
+  }
 
   /**
    * Emitted after the popover has presented.
@@ -165,11 +184,15 @@ export class Popover implements ComponentInterface, OverlayInterface {
     prepareOverlay(this.el);
   }
 
+  componentDidLoad() {
+    this.configureTriggerInteraction();
+  }
+
   /**
    * Present the popover overlay after it has been created.
    */
   @Method()
-  async present(event?: MouseEvent): Promise<void> {
+  async present(event?: any): Promise<void> {
     if (this.presented) {
       return;
     }
@@ -245,14 +268,44 @@ export class Popover implements ComponentInterface, OverlayInterface {
     }
   }
 
-  componentDidLoad() {
-    const { trigger } = this;
-    if (trigger) {
-      const triggerEl = this.triggerEl = document.getElementById(trigger);
-      if (triggerEl) {
-        triggerEl.addEventListener('click', ev => this.present(ev))
-      }
+  private destroyTriggerInteraction = () => {
+    const { triggerEl, triggerCallback, triggerEvent } = this;
+
+    if (triggerEl && triggerCallback && triggerEvent) {
+      triggerEl.removeEventListener(triggerEvent, triggerCallback);
     }
+  }
+
+  private configureTriggerInteraction = () => {
+    this.destroyTriggerInteraction();
+
+    const { trigger, triggerAction } = this;
+    if (!trigger) return;
+
+    const triggerEl = this.triggerEl = document.getElementById(trigger);
+    if (!triggerEl) return;
+
+    switch(triggerAction) {
+      case 'hover':
+        this.triggerCallback = (ev: Event) => this.present(ev);
+        this.triggerEvent = 'mouseenter';
+        break;
+      case 'context-menu':
+        this.triggerCallback = (ev: Event) => {
+          ev.preventDefault();
+          this.present(ev);
+        };
+        this.triggerEvent = 'contextmenu';
+        break;
+      case 'click':
+      default:
+        this.triggerCallback = (ev: Event) => this.present(ev);
+        this.triggerEvent = 'click';
+        break;
+    }
+
+    triggerEl.addEventListener(this.triggerEvent, this.triggerCallback);
+    console.log(triggerEl, this.triggerEvent, this.triggerCallback)
   }
 
   render() {
@@ -279,6 +332,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
         onIonDismiss={this.onDismiss}
         onIonBackdropTap={this.onBackdropTap}
       >
+        <slot name="trigger"></slot>
         <ion-backdrop tappable={this.backdropDismiss} visible={this.showBackdrop}/>
 
         <div tabindex="0"></div>

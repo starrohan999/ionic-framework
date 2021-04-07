@@ -15,8 +15,22 @@
     window.popoverController = popoverController;
   </script>
 <body>
-  <ion-button id="liam">Click to Open Popover</ion-button>
+  <ion-button id="liam">Click Me</ion-button>
   <ion-popover trigger="liam" size="cover">
+    <profile-page></profile-page>
+  </ion-popover>
+
+  <br />
+
+  <ion-button id="liam2">Hover Over Me</ion-button>
+  <ion-popover trigger="liam2" size="cover" trigger-action="hover">
+    <profile-page></profile-page>
+  </ion-popover>
+
+  <br />
+
+  <ion-button id="liam3">Right Click Me</ion-button>
+  <ion-popover trigger="liam3" size="cover" trigger-action="context-menu">
     <profile-page></profile-page>
   </ion-popover>
 

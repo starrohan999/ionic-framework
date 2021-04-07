@@ -1708,13 +1708,13 @@ export namespace Components {
         /**
           * Present the popover overlay after it has been created.
          */
-        "present": (event?: MouseEvent | undefined) => Promise<void>;
+        "present": (event?: any) => Promise<void>;
         /**
           * If `true`, a backdrop will be displayed behind the popover.
          */
         "showBackdrop": boolean;
         /**
-          * Describes how to calculate the popover width. If `'cover'`, the popover width will match the width of the trigger. If `'auto'`, the popover width will be determined by the content in the popover. Defaults to `'auto'`.
+          * Describes how to calculate the popover width. If `'cover'`, the popover width will match the width of the trigger. If `'auto'`, the popover width will be determined by the content in the popover.
          */
         "size": PopoverSize;
         /**
@@ -1725,6 +1725,10 @@ export namespace Components {
           * An ID corresponding to the trigger element that causes the popover to open. Use the `trigger-action` property to customize the interaction that results in the popover opening.
          */
         "trigger": string | undefined;
+        /**
+          * Describes what kind of interaction with the trigger that should cause the popover to open. Does not apply when the `trigger` property is `undefined`. If `'click'`, the popover will be presented when the trigger is left clicked. If `'hover'`, the popover will be presented when a pointer hovers over the trigger. If `'context-menu'`, the popover will be presented when the trigger is right clicked on desktop and long pressed on mobile. This will also prevent your device's normal context menu from appearing.
+         */
+        "triggerAction": 'click' | 'hover' | 'context-menu';
     }
     interface IonProgressBar {
         /**
@@ -5052,7 +5056,7 @@ declare namespace LocalJSX {
          */
         "showBackdrop"?: boolean;
         /**
-          * Describes how to calculate the popover width. If `'cover'`, the popover width will match the width of the trigger. If `'auto'`, the popover width will be determined by the content in the popover. Defaults to `'auto'`.
+          * Describes how to calculate the popover width. If `'cover'`, the popover width will match the width of the trigger. If `'auto'`, the popover width will be determined by the content in the popover.
          */
         "size"?: PopoverSize;
         /**
@@ -5063,6 +5067,10 @@ declare namespace LocalJSX {
           * An ID corresponding to the trigger element that causes the popover to open. Use the `trigger-action` property to customize the interaction that results in the popover opening.
          */
         "trigger"?: string | undefined;
+        /**
+          * Describes what kind of interaction with the trigger that should cause the popover to open. Does not apply when the `trigger` property is `undefined`. If `'click'`, the popover will be presented when the trigger is left clicked. If `'hover'`, the popover will be presented when a pointer hovers over the trigger. If `'context-menu'`, the popover will be presented when the trigger is right clicked on desktop and long pressed on mobile. This will also prevent your device's normal context menu from appearing.
+         */
+        "triggerAction"?: 'click' | 'hover' | 'context-menu';
     }
     interface IonProgressBar {
         /**
