@@ -15,28 +15,76 @@
     window.popoverController = popoverController;
   </script>
   <style>
-  ion-popover#my-popover {
-    --offset-x: 100px;
-    --offset-y: 100px;
+  ion-popover.view-popover {
+    --offset-x: 251px;
+    --offset-y: -48px;
+    --width: 173px;
+  }
+  ion-item-divider {
+    min-height: 1px;
+  }
+
+  ion-popover {
+    pointer-events: none;
+  }
+
+  ion-popover .popover-content {
+    pointer-events: auto;
   }
   </style>
 <body>
   <ion-button id="liam">Click Me</ion-button>
-  <ion-popover trigger="liam" id="my-popover">
+  <ion-popover show-backdrop="false" trigger="liam">
     <ion-content>
-      mY inner popover stuff
-      <ion-item button id="nested-one">
-        <ion-label>More...</ion-label>
-      </ion-item>
-      <ion-popover trigger="nested-one">
-        This is my nested popover
-        <ion-item button id="nested-two">
-          <ion-label>More...</ion-label>
+      <ion-list lines="none">
+        <ion-item button>
+          <ion-label>Cut</ion-label>
         </ion-item>
-        <ion-popover trigger="nested-two">
-          This is my nested popover again
+        <ion-item button>
+          <ion-label>Copy</ion-label>
+        </ion-item>
+        <ion-item button>
+          <ion-label>Paste</ion-label>
+        </ion-item>
+
+        <ion-item-divider></ion-item-divider>
+
+        <ion-item button detail id="view-popover-trigger">
+          <ion-label>View</ion-label>
+        </ion-item>
+
+        <ion-popover css-class="view-popover" show-backdrop="false" trigger="view-popover-trigger" trigger-action="hover">
+          <ion-list lines="none">
+            <ion-radio-group value="icons">
+              <ion-item>
+                <ion-label>as Icons</ion-label>
+                <ion-radio value="icons" slot="start"></ion-radio>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>as List</ion-label>
+                <ion-radio value="list" slot="start"></ion-radio>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>as Columns</ion-label>
+                <ion-radio value="columns" slot="start"></ion-radio>
+              </ion-item>
+
+              <ion-item>
+                <ion-label>as Gallery</ion-label>
+                <ion-radio value="gallery" slot="start"></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+          </ion-list>
         </ion-popover>
-      </ion-popover>
+
+        <ion-item-divider></ion-item-divider>
+
+        <ion-item button>
+          <ion-label>Preferences</ion-label>
+        </ion-item>
+      </ion-list>
     </ion-content>
   </ion-popover>
 
