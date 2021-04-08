@@ -1678,6 +1678,10 @@ export namespace Components {
          */
         "dismiss": (data?: any, role?: string | undefined, dismissParentPopover?: boolean) => Promise<boolean>;
         /**
+          * If `true`, the popover will be automatically dismissed when the content has been clicked.
+         */
+        "dismissOnSelect": boolean;
+        /**
           * Animation to use when the popover is presented.
          */
         "enterAnimation"?: AnimationBuilder;
@@ -1685,6 +1689,7 @@ export namespace Components {
           * The event to pass to the popover animation.
          */
         "event": any;
+        "getParentPopover": () => Promise<HTMLIonPopoverElement | null>;
         /**
           * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
          */
@@ -5015,6 +5020,10 @@ declare namespace LocalJSX {
          */
         "cssClass"?: string | string[];
         "delegate"?: FrameworkDelegate;
+        /**
+          * If `true`, the popover will be automatically dismissed when the content has been clicked.
+         */
+        "dismissOnSelect"?: boolean;
         /**
           * Animation to use when the popover is presented.
          */
