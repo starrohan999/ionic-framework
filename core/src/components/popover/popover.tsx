@@ -338,6 +338,17 @@ export class Popover implements ComponentInterface, OverlayInterface {
     }
 
     triggerEl.addEventListener(this.triggerEvent, this.triggerCallback);
+
+    if (triggerAction === 'hover') {
+      triggerEl.addEventListener('mouseleave', (ev) => {
+        const target = ev.relatedTarget as HTMLElement | null;
+        if (!target) return;
+
+        if (target.closest('ion-popover') !== this.el) {
+          this.dismiss(undefined, undefined, false);
+        }
+      });
+    }
   }
 
   private setupListeners = () => {
@@ -346,14 +357,15 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
     contentEl.addEventListener('pointerleave', async (ev) => {
       const relatedTarget = ev.relatedTarget as HTMLElement | null;
-      if (relatedTarget && triggerEl !== relatedTarget && relatedTarget.tagName !== 'ION-BACKDROP') {
-        const closestPopover = relatedTarget.closest('ion-popover');
-        if (closestPopover) {
-          const getClosestPopoverParent = await closestPopover.getParentPopover();
-          console.log('el', this.el, 'closest popover', closestPopover, 'parent of closest popover', getClosestPopoverParent, this.el === getClosestPopoverParent)
-          if (getClosestPopoverParent !== this.el) {
-            this.dismiss(undefined, undefined, false)
-          }
+      if (!relatedTarget) return;
+      if (triggerEl === relatedTarget) return;
+      if (relatedTarget.tagName === 'ION-BACKDROP') return;
+
+      const closestPopover = relatedTarget.closest('ion-popover');
+      if (closestPopover) {
+        const getClosestPopoverParent = await closestPopover.getParentPopover();
+        if (getClosestPopoverParent !== this.el) {
+          this.dismiss(undefined, undefined, false)
         }
       }
     });
@@ -362,7 +374,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
   render() {
     const mode = getIonMode(this);
     const { onLifecycle, popoverId, parentPopover, dismissOnSelect } = this;
-    console.log(dismissOnSelect)
+
     return (
       <Host
         aria-modal="true"
@@ -391,10 +403,12 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
         <div class="popover-wrapper ion-overlay-wrapper">
           <div class="popover-arrow"></div>
+          {/* TODO: how do we exclude trigger elements from onClick handler? */}
+
           <div
             class="popover-content"
             ref={el => this.contentEl = el}
-            onClick={dismissOnSelect ? (ev) => this.dismiss() : undefined}
+            onClick={dismissOnSelect ? () => this.dismiss() : undefined}
           >
             <slot></slot>
           </div>
