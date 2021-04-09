@@ -1,36 +1,36 @@
-import { Component, ComponentInterface, Element, Event, EventEmitter, Host, Method, Prop, h, Watch } from '@stencil/core';
+import { Component, ComponentInterface, Element, Event, EventEmitter, Host, Method, Prop, Watch, h } from '@stencil/core';
 
 import { getIonMode } from '../../global/ionic-global';
-import { AnimationBuilder, ComponentProps, ComponentRef, FrameworkDelegate, OverlayEventDetail, OverlayInterface, PopoverSize } from '../../interface';
+import { AnimationBuilder, ComponentProps, ComponentRef, FrameworkDelegate, OverlayEventDetail, OverlayInterface, PopoverSize, TriggerAction } from '../../interface';
 import { attachComponent, detachComponent } from '../../utils/framework-delegate';
+import { addEventListener } from '../../utils/helpers';
 import { BACKDROP, dismiss, eventMethod, prepareOverlay, present } from '../../utils/overlays';
 import { getClassMap } from '../../utils/theme';
 import { deepReady } from '../../utils/transition';
-import { addEventListener } from '../../utils/helpers';
 
 import { iosEnterAnimation } from './animations/ios.enter';
 import { iosLeaveAnimation } from './animations/ios.leave';
 import { mdEnterAnimation } from './animations/md.enter';
 import { mdLeaveAnimation } from './animations/md.leave';
+import { configureTriggerInteraction } from './utils';
 
 const CoreDelegate = () => {
-  let Component: any;
-  const attachViewToDom = (parentElement: HTMLElement, component: any, componentProps: any = {}, classes?: string[]) => {
-    Component = parentElement.closest('ion-popover');
+  let Cmp: any;
+  const attachViewToDom = (parentElement: HTMLElement, _: any, _2: any = {}, _3?: string[]) => {
+    Cmp = parentElement.closest('ion-popover');
     const app = document.querySelector('ion-app') || document.body;
 
-    if (app && Component) {
-      app.appendChild(Component);
-      classes;
-      componentProps;
-      component;
+    if (app && Cmp) {
+      app.appendChild(Cmp);
     }
 
-    return Component;
+    return Cmp;
   }
 
   const removeViewFromDom = () => {
-    Component && Component.remove();
+    if (Cmp) {
+      Cmp.remove();
+    }
     return Promise.resolve();
   }
 
@@ -52,11 +52,9 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
   private usersElement?: HTMLElement;
   private triggerEl?: HTMLElement | null;
-  private triggerCallback?: any;
-  private triggerEvent?: string;
   private parentPopover: HTMLIonPopoverElement | null = null;
   private popoverId = `ion-popover-${popoverIds++}`;
-  private contentEl?: HTMLElement | null;
+  private destroyTriggerInteraction?: () => void;
 
   presented = false;
   lastFocus?: HTMLElement;
@@ -140,7 +138,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
    * clicked on desktop and long pressed on mobile. This will also prevent your
    * device's normal context menu from appearing.
    */
-  @Prop() triggerAction: 'click' | 'hover' | 'context-menu' = 'click';
+  @Prop() triggerAction: TriggerAction = 'click';
 
   /**
    * An ID corresponding to the trigger element that
@@ -222,7 +220,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
       ...this.componentProps,
       popover: this.el
     };
-    this.setupListeners();
+
     this.usersElement = await attachComponent(this.delegate, container, this.component, ['popover-viewport', (this.el as any)['s-sc']], data);
     await deepReady(this.usersElement);
     return present(this, 'popoverEnter', iosEnterAnimation, mdEnterAnimation, {
@@ -300,75 +298,17 @@ export class Popover implements ComponentInterface, OverlayInterface {
       el.dispatchEvent(event);
     }
   }
-
-  private destroyTriggerInteraction = () => {
-    const { triggerEl, triggerCallback, triggerEvent } = this;
-
-    if (triggerEl && triggerCallback && triggerEvent) {
-      triggerEl.removeEventListener(triggerEvent, triggerCallback);
-    }
-  }
-
   private configureTriggerInteraction = () => {
-    this.destroyTriggerInteraction();
+    const { trigger, triggerAction, el, destroyTriggerInteraction } = this;
 
-    const { trigger, triggerAction } = this;
-    if (!trigger) return;
-
-    const triggerEl = this.triggerEl = document.getElementById(trigger);
-    if (!triggerEl) return;
-
-    switch(triggerAction) {
-      case 'hover':
-        this.triggerCallback = (ev: Event) => this.present(ev);
-        this.triggerEvent = 'mouseenter';
-        break;
-      case 'context-menu':
-        this.triggerCallback = (ev: Event) => {
-          ev.preventDefault();
-          this.present(ev);
-        };
-        this.triggerEvent = 'contextmenu';
-        break;
-      case 'click':
-      default:
-        this.triggerCallback = (ev: Event) => this.present(ev);
-        this.triggerEvent = 'click';
-        break;
+    if (destroyTriggerInteraction) {
+      destroyTriggerInteraction();
     }
 
-    triggerEl.addEventListener(this.triggerEvent, this.triggerCallback);
+    const triggerEl = this.triggerEl = (trigger !== undefined) ? document.getElementById(trigger) : null;
+    if (!triggerEl) { return; }
 
-    if (triggerAction === 'hover') {
-      triggerEl.addEventListener('mouseleave', (ev) => {
-        const target = ev.relatedTarget as HTMLElement | null;
-        if (!target) return;
-
-        if (target.closest('ion-popover') !== this.el) {
-          this.dismiss(undefined, undefined, false);
-        }
-      });
-    }
-  }
-
-  private setupListeners = () => {
-    const { contentEl, triggerEl } = this;
-    if (!contentEl || !triggerEl) return;
-
-    contentEl.addEventListener('pointerleave', async (ev) => {
-      const relatedTarget = ev.relatedTarget as HTMLElement | null;
-      if (!relatedTarget) return;
-      if (triggerEl === relatedTarget) return;
-      if (relatedTarget.tagName === 'ION-BACKDROP') return;
-
-      const closestPopover = relatedTarget.closest('ion-popover');
-      if (closestPopover) {
-        const getClosestPopoverParent = await closestPopover.getParentPopover();
-        if (getClosestPopoverParent !== this.el) {
-          this.dismiss(undefined, undefined, false)
-        }
-      }
-    });
+    this.destroyTriggerInteraction = configureTriggerInteraction(triggerEl, triggerAction, el);
   }
 
   render() {
@@ -397,7 +337,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
         onIonDismiss={this.onDismiss}
         onIonBackdropTap={this.onBackdropTap}
       >
-        { !parentPopover && <ion-backdrop tappable={this.backdropDismiss} visible={this.showBackdrop} /> }
+        {!parentPopover && <ion-backdrop tappable={this.backdropDismiss} visible={this.showBackdrop} />}
 
         <div tabindex="0"></div>
 
@@ -407,7 +347,6 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
           <div
             class="popover-content"
-            ref={el => this.contentEl = el}
             onClick={dismissOnSelect ? () => this.dismiss() : undefined}
           >
             <slot></slot>
