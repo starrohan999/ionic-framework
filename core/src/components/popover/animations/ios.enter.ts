@@ -1,13 +1,15 @@
 import { Animation } from '../../../interface';
 import { createAnimation } from '../../../utils/animation/animation';
-import { getPopoverDimensions } from '../utils';
+import { getPopoverDimensions, positionPopover } from '../utils';
 /**
  * iOS Popover Enter Animation
  */
 export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => {
-  const { event: ev, size, trigger } = opts;
-  let originY = 'top';
-  let originX = 'left';
+  const { event: ev, size, trigger, reference, side, align } = opts;
+  const originY = 'top';
+  const originX = 'left';
+  const doc = (baseEl.ownerDocument as any);
+  const isRTL = doc.dir === 'rtl';
 
   const contentEl = baseEl.querySelector('.popover-content') as HTMLElement;
   const { contentWidth, contentHeight } = getPopoverDimensions(size, contentEl, trigger);
@@ -16,9 +18,11 @@ export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation =>
     baseEl.style.setProperty('--width', `${contentWidth}px`);
   }
 
+  positionPopover(isRTL, contentEl, reference, side, align, trigger, ev);
+
   // TODO revise this to account for new positioning APIs
 
-  const bodyWidth = (baseEl.ownerDocument as any).defaultView.innerWidth;
+  /*const bodyWidth = (baseEl.ownerDocument as any).defaultView.innerWidth;
   const bodyHeight = (baseEl.ownerDocument as any).defaultView.innerHeight;
 
   // If ev was passed, use that for target element
@@ -99,7 +103,7 @@ export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation =>
 
   if (checkSafeAreaRight) {
     contentEl.style.left = `calc(${popoverCSS.left}px - var(--ion-safe-area-right, 0px) + var(--offset-x))`;
-  }
+  }*/
 
   contentEl.style.transformOrigin = originY + ' ' + originX;
 

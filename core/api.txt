@@ -824,6 +824,7 @@ ion-picker,css-prop,--min-width
 ion-picker,css-prop,--width
 
 ion-popover,scoped
+ion-popover,prop,align,"center" | "end" | "start",'start',false,false
 ion-popover,prop,animated,boolean,true,false,false
 ion-popover,prop,backdropDismiss,boolean,true,false,false
 ion-popover,prop,dismissOnSelect,boolean,false,false,false
@@ -832,7 +833,9 @@ ion-popover,prop,event,any,undefined,false,false
 ion-popover,prop,keyboardClose,boolean,true,false,false
 ion-popover,prop,leaveAnimation,((baseEl: any, opts?: any) => Animation) | undefined,undefined,false,false
 ion-popover,prop,mode,"ios" | "md",undefined,false,false
+ion-popover,prop,reference,"event" | "trigger",'trigger',false,false
 ion-popover,prop,showBackdrop,boolean,true,false,false
+ion-popover,prop,side,"bottom" | "end" | "left" | "right" | "start" | "top",'bottom',false,false
 ion-popover,prop,size,"auto" | "cover",'auto',false,false
 ion-popover,prop,translucent,boolean,false,false,false
 ion-popover,prop,trigger,string | undefined,undefined,false,false

@@ -1,4 +1,4 @@
-import { PopoverSize, TriggerAction } from '../../interface';
+import { PopoverSize, PositionAlign, PositionReference, PositionSide, TriggerAction } from '../../interface';
 import { raf } from '../../utils/helpers';
 
 /**
@@ -6,7 +6,11 @@ import { raf } from '../../utils/helpers';
  * that takes into account whether or not the width
  * should match the trigger width.
  */
-export const getPopoverDimensions = (size: PopoverSize, contentEl: HTMLElement, triggerEl?: HTMLElement) => {
+export const getPopoverDimensions = (
+  size: PopoverSize,
+  contentEl: HTMLElement,
+  triggerEl?: HTMLElement
+) => {
   const contentDimentions = contentEl.getBoundingClientRect();
   const contentHeight = contentDimentions.height;
   let contentWidth = contentDimentions.width;
@@ -22,8 +26,16 @@ export const getPopoverDimensions = (size: PopoverSize, contentEl: HTMLElement, 
   }
 }
 
-interface TriggerCallback { eventName: string;
-                            callback: (ev: any) => void;
+interface TriggerCallback {
+  eventName: string;
+  callback: (ev: any) => void;
+}
+
+interface ReferenceCoordinates {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
 }
 
 /**
@@ -31,7 +43,11 @@ interface TriggerCallback { eventName: string;
  * to user interaction based upon the triggerAction
  * prop that devs have defined.
  */
-export const configureTriggerInteraction = (triggerEl: HTMLElement, triggerAction: TriggerAction, popoverEl: HTMLIonPopoverElement) => {
+export const configureTriggerInteraction = (
+  triggerEl: HTMLElement,
+  triggerAction: TriggerAction,
+  popoverEl: HTMLIonPopoverElement
+) => {
   let triggerCallbacks: TriggerCallback[] = [];
   switch (triggerAction) {
     case 'hover':
@@ -109,5 +125,101 @@ export const configureTriggerInteraction = (triggerEl: HTMLElement, triggerActio
 
   return () => {
     triggerCallbacks.forEach(({ eventName, callback }) => triggerEl.removeEventListener(eventName, callback));
+  }
+}
+
+export const positionPopover = (
+  isRTL: boolean,
+  contentEl: HTMLElement,
+  reference: PositionReference,
+  side: PositionSide,
+  align: PositionAlign,
+  triggerEl?: HTMLElement,
+  event?: MouseEvent
+) => {
+  const contentBoundingBox = contentEl.getBoundingClientRect();
+  let referenceCoordinates = {
+    top: 0,
+    left: 0,
+    width: 0,
+    height: 0
+  };
+
+  switch (reference) {
+    case 'event':
+      if (!event) {
+        console.error('No event provided');
+        return;
+      }
+
+      referenceCoordinates = {
+        top: event.clientY,
+        left: event.clientX,
+        width: 1,
+        height: 1
+      }
+
+      break;
+    case 'trigger':
+    default:
+      const actualTriggerEl = (triggerEl || event?.target) as HTMLElement | null;
+      if (!actualTriggerEl) {
+        console.error('No trigger element found');
+        return;
+      }
+      const triggerBoundingBox = actualTriggerEl.getBoundingClientRect();
+      referenceCoordinates = {
+        top: triggerBoundingBox.top,
+        left: triggerBoundingBox.left,
+        width: triggerBoundingBox.width,
+        height: triggerBoundingBox.height
+      }
+
+      break;
+  }
+
+  const { top, left } = calculatePopoverOffset(side, referenceCoordinates, contentBoundingBox, isRTL);
+
+  contentEl.style.setProperty('top', `calc(${top}px + var(--offset-y))`);
+  contentEl.style.setProperty('left', `calc(${left}px + var(--offset-x))`);
+}
+
+const calculatePopoverOffset = (
+  side: PositionSide,
+  triggerBoundingBox: ReferenceCoordinates,
+  contentBoundingBox: DOMRect,
+  isRTL: boolean
+) => {
+  switch (side) {
+    case 'top':
+      return {
+        top: triggerBoundingBox.top - contentBoundingBox.height,
+        left: triggerBoundingBox.left
+      }
+    case 'right':
+      return {
+        top: triggerBoundingBox.top,
+        left: triggerBoundingBox.left + triggerBoundingBox.width
+      }
+    case 'bottom':
+      return {
+        top: triggerBoundingBox.top + triggerBoundingBox.height,
+        left: triggerBoundingBox.left
+      }
+    case 'left':
+      return {
+        top: triggerBoundingBox.top,
+        left: triggerBoundingBox.left - contentBoundingBox.width
+      }
+    case 'start':
+      return {
+        top: triggerBoundingBox.top,
+        left: (isRTL) ? triggerBoundingBox.left + triggerBoundingBox.width : triggerBoundingBox.left - contentBoundingBox.width
+      }
+    case 'end':
+      return {
+        top: triggerBoundingBox.top,
+        left: (isRTL) ? triggerBoundingBox.left - contentBoundingBox.width : triggerBoundingBox.left - triggerBoundingBox.width
+      }
   }
 }

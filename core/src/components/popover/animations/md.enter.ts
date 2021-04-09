@@ -1,18 +1,18 @@
 import { Animation } from '../../../interface';
 import { createAnimation } from '../../../utils/animation/animation';
-import { getPopoverDimensions } from '../utils';
+import { getPopoverDimensions, positionPopover } from '../utils';
 
 /**
  * Md Popover Enter Animation
  */
 export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => {
-  const { event: ev, size, trigger } = opts;
+  const { event: ev, size, trigger, reference, side, align } = opts;
   const POPOVER_MD_BODY_PADDING = 12;
   const doc = (baseEl.ownerDocument as any);
   const isRTL = doc.dir === 'rtl';
 
-  let originY = 'top';
-  let originX = isRTL ? 'right' : 'left';
+  const originY = 'top';
+  const originX = isRTL ? 'right' : 'left';
 
   const contentEl = baseEl.querySelector('.popover-content') as HTMLElement;
   const { contentWidth, contentHeight } = getPopoverDimensions(size, contentEl, trigger);
@@ -21,7 +21,9 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
     baseEl.style.setProperty('--width', `${contentWidth}px`);
   }
 
-  const bodyWidth = doc.defaultView.innerWidth;
+  positionPopover(isRTL, contentEl, reference, side, align, trigger, ev);
+
+  /*const bodyWidth = doc.defaultView.innerWidth;
   const bodyHeight = doc.defaultView.innerHeight;
 
   // If ev was passed, use that for target element
@@ -80,7 +82,7 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
     // If there isn't room for it to pop up above the target cut it off
   } else if (targetTop + targetHeight + contentHeight > bodyHeight) {
     contentEl.style.bottom = POPOVER_MD_BODY_PADDING + 'px';
-  }
+  }*/
 
   const baseAnimation = createAnimation();
   const backdropAnimation = createAnimation();
@@ -103,9 +105,9 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
   contentAnimation
     .addElement(contentEl)
     .beforeStyles({
-      'top': `calc(${popoverCSS.top}px + var(--offset-y))`,
-      'left': `calc(${popoverCSS.left}px + var(--offset-x))`,
-      'transform-origin': `${originY} ${originX}`
+      // 'top': `calc(${popoverCSS.top}px + var(--offset-y))`,
+      // 'left': `calc(${popoverCSS.left}px + var(--offset-x))`,
+      // 'transform-origin': `${originY} ${originX}`
     })
     .fromTo('transform', 'scale(0.001)', 'scale(1)');
 

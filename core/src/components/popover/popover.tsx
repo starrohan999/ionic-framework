@@ -1,7 +1,7 @@
 import { Component, ComponentInterface, Element, Event, EventEmitter, Host, Method, Prop, Watch, h } from '@stencil/core';
 
 import { getIonMode } from '../../global/ionic-global';
-import { AnimationBuilder, ComponentProps, ComponentRef, FrameworkDelegate, OverlayEventDetail, OverlayInterface, PopoverSize, TriggerAction } from '../../interface';
+import { AnimationBuilder, ComponentProps, ComponentRef, FrameworkDelegate, OverlayEventDetail, OverlayInterface, PopoverSize, PositionAlign, PositionReference, PositionSide, TriggerAction } from '../../interface';
 import { attachComponent, detachComponent } from '../../utils/framework-delegate';
 import { addEventListener } from '../../utils/helpers';
 import { BACKDROP, dismiss, eventMethod, prepareOverlay, present } from '../../utils/overlays';
@@ -162,6 +162,29 @@ export class Popover implements ComponentInterface, OverlayInterface {
    */
   @Prop() dismissOnSelect = false;
 
+  /**
+   * Describes what to position the popover relative to.
+   * If `'trigger'`, the popover will be positioned relative
+   * to the trigger button. If passing in an event, this is
+   * determined via event.target.
+   * If `'event'`, the popover will be positioned relative
+   * to the x/y coordinates of the trigger action. If passing
+   * in an event, this is determined via event.clientX and event.clientY.
+   */
+  @Prop() reference: PositionReference = 'trigger';
+
+  /**
+   * Describes which side of the `reference` point to position
+   * the popover on. The `'start'` and `'end'` values are RTL-aware,
+   * and the `'left'` and `'right'` values are not.
+   */
+  @Prop() side: PositionSide = 'bottom';
+
+  /**
+   * Describes how to align the popover content with the `reference` point.
+   */
+  @Prop() align: PositionAlign = 'start';
+
   @Watch('trigger')
   @Watch('triggerAction')
   onTriggerChange() {
@@ -226,7 +249,10 @@ export class Popover implements ComponentInterface, OverlayInterface {
     return present(this, 'popoverEnter', iosEnterAnimation, mdEnterAnimation, {
       event: this.event || event,
       size: this.size,
-      trigger: this.triggerEl
+      trigger: this.triggerEl,
+      reference: this.reference,
+      side: this.side,
+      align: this.align
     });
   }
 
