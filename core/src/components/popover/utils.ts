@@ -14,12 +14,11 @@ export const getPopoverDimensions = (
   const contentDimentions = contentEl.getBoundingClientRect();
   const contentHeight = contentDimentions.height;
   let contentWidth = contentDimentions.width;
+
   if (size === 'cover' && triggerEl) {
     const triggerDimensions = triggerEl.getBoundingClientRect();
     contentWidth = triggerDimensions.width;
   }
-  console.log(contentEl.clientWidth, contentEl);
-  debugger;
 
   return {
     contentWidth,

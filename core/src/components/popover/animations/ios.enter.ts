@@ -42,8 +42,10 @@ export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation =>
     .addElement(baseEl)
     .easing('ease')
     .duration(100)
-    .beforeStyles({
-      '--width': (size === 'cover') ? `${contentWidth}px` : undefined
+    .beforeAddWrite(() => {
+      if (size === 'cover') {
+        baseEl.style.setProperty('--width', `${contentWidth}px`);
+      }
     })
     .addAnimation([backdropAnimation, wrapperAnimation]);
 };

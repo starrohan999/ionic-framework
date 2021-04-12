@@ -70,8 +70,10 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
     .addElement(baseEl)
     .easing('cubic-bezier(0.36,0.66,0.04,1)')
     .duration(300)
-    .beforeStyles({
-      '--width': (size === 'cover') ? `${contentWidth}px` : undefined
+    .beforeAddWrite(() => {
+      if (size === 'cover') {
+        baseEl.style.setProperty('--width', `${contentWidth}px`);
+      }
     })
     .addAnimation([backdropAnimation, wrapperAnimation, contentAnimation, viewportAnimation]);
 };
