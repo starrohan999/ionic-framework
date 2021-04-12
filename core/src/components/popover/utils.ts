@@ -197,6 +197,7 @@ export const positionPopover = (
         width: triggerBoundingBox.width,
         height: triggerBoundingBox.height
       }
+      console.log('trigger El', triggerEl, triggerBoundingBox)
 
       break;
   }
@@ -207,7 +208,7 @@ export const positionPopover = (
    * preferred side of the reference.
    */
   const coordinates = calculatePopoverSide(side, referenceCoordinates, contentBoundingBox, isRTL);
-
+console.log(referenceCoordinates, coordinates)
   /**
    * Get the top/left adjustments that
    * would allow the popover content
@@ -235,6 +236,7 @@ const calculatePopoverSide = (
 ) => {
   switch (side) {
     case 'top':
+    console.log(triggerBoundingBox, contentBoundingBox)
       return {
         top: triggerBoundingBox.top - contentBoundingBox.height,
         left: triggerBoundingBox.left

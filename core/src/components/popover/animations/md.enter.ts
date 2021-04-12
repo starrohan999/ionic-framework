@@ -16,12 +16,11 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
   //const bodyHeight = doc.defaultView.innerHeight;
 
   const contentEl = baseEl.querySelector('.popover-content') as HTMLElement;
-  const { contentWidth } = getPopoverDimensions(size, contentEl, trigger);
-
+  const { contentWidth, contentHeight } = getPopoverDimensions(size, contentEl, trigger);
+console.log('hello world', contentHeight)
   let popoverCSS = positionPopover(isRTL, contentEl, reference, side, align, trigger, ev);
-  console.log(popoverCSS.left)
 
-  if (popoverCSS.left < POPOVER_MD_BODY_PADDING) {
+  /*if (popoverCSS.left < POPOVER_MD_BODY_PADDING) {
     popoverCSS.left = POPOVER_MD_BODY_PADDING;
     originX = 'left';
   } else if (
@@ -30,9 +29,9 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
   ) {
     popoverCSS.left = bodyWidth - contentWidth - POPOVER_MD_BODY_PADDING;
     originX = 'right';
-  }
+  }*/
 
-  console.log(contentWidth)
+  console.log('hello world', popoverCSS)
 
 
   const baseAnimation = createAnimation();
