@@ -10,8 +10,8 @@ export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation =>
   const originX = 'left';
   const doc = (baseEl.ownerDocument as any);
   const isRTL = doc.dir === 'rtl';
-  const bodyWidth = doc.defaultView.innerWidth;
-  const bodyHeight = doc.defaultView.innerHeight;
+  // const bodyWidth = doc.defaultView.innerWidth;
+  // const bodyHeight = doc.defaultView.innerHeight;
 
   const contentEl = baseEl.querySelector('.popover-content') as HTMLElement;
   const { contentWidth } = getPopoverDimensions(size, contentEl, trigger);
@@ -19,8 +19,8 @@ export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation =>
   const { top, left } = positionPopover(isRTL, contentEl, reference, side, align, trigger, ev);
 
   contentEl.style.setProperty('transform-origin', `${originY} ${originX}`);
-  contentEl.style.setProperty('top', `calc(${top}px + var(--offset-y))`);
-  contentEl.style.setProperty('left', `calc(${left}px + var(--offset-y))`);
+  contentEl.style.setProperty('top', `calc(${top}px + var(--offset-y, 0px))`);
+  contentEl.style.setProperty('left', `calc(${left}px + var(--offset-x, 0px))`);
 
   const baseAnimation = createAnimation();
   const backdropAnimation = createAnimation();
