@@ -11,12 +11,29 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
   const isRTL = doc.dir === 'rtl';
 
   const originY = 'top';
-  const originX = isRTL ? 'right' : 'left';
+  let originX = isRTL ? 'right' : 'left';
+  const bodyWidth = doc.defaultView.innerWidth;
+  //const bodyHeight = doc.defaultView.innerHeight;
 
   const contentEl = baseEl.querySelector('.popover-content') as HTMLElement;
   const { contentWidth } = getPopoverDimensions(size, contentEl, trigger);
 
-  const { top, left } = positionPopover(isRTL, contentEl, reference, side, align, trigger, ev);
+  let popoverCSS = positionPopover(isRTL, contentEl, reference, side, align, trigger, ev);
+  console.log(popoverCSS.left)
+
+  if (popoverCSS.left < POPOVER_MD_BODY_PADDING) {
+    popoverCSS.left = POPOVER_MD_BODY_PADDING;
+    originX = 'left';
+  } else if (
+    contentWidth + POPOVER_MD_BODY_PADDING + popoverCSS.left >
+    bodyWidth
+  ) {
+    popoverCSS.left = bodyWidth - contentWidth - POPOVER_MD_BODY_PADDING;
+    originX = 'right';
+  }
+
+  console.log(contentWidth)
+
 
   const baseAnimation = createAnimation();
   const backdropAnimation = createAnimation();
@@ -39,8 +56,8 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
   contentAnimation
     .addElement(contentEl)
     .beforeStyles({
-      'top': `calc(${top}px + var(--offset-y))`,
-      'left': `calc(${left}px + var(--offset-x))`,
+      'top': `calc(${popoverCSS.top}px + var(--offset-y))`,
+      'left': `calc(${popoverCSS.left}px + var(--offset-x))`,
       'transform-origin': `${originY} ${originX}`
     })
     .fromTo('transform', 'scale(0.001)', 'scale(1)');
@@ -58,3 +75,5 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
     })
     .addAnimation([backdropAnimation, wrapperAnimation, contentAnimation, viewportAnimation]);
 };
+
+const POPOVER_MD_BODY_PADDING = 12;

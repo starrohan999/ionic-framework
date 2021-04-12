@@ -10,6 +10,8 @@ export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation =>
   const originX = 'left';
   const doc = (baseEl.ownerDocument as any);
   const isRTL = doc.dir === 'rtl';
+  const bodyWidth = doc.defaultView.innerWidth;
+  const bodyHeight = doc.defaultView.innerHeight;
 
   const contentEl = baseEl.querySelector('.popover-content') as HTMLElement;
   const { contentWidth } = getPopoverDimensions(size, contentEl, trigger);
