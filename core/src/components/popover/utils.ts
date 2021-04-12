@@ -128,6 +128,11 @@ export const configureTriggerInteraction = (
   }
 }
 
+/**
+ * Positions a popover by taking into account
+ * the reference point, preferred side, alignment
+ * and viewport dimensions.
+ */
 export const positionPopover = (
   isRTL: boolean,
   contentEl: HTMLElement,
@@ -145,6 +150,11 @@ export const positionPopover = (
     height: 0
   };
 
+  /**
+   * Calculate position relative to the
+   * x-y coordinates in the event that
+   * was passed in
+   */
   switch (reference) {
     case 'event':
       if (!event) {
@@ -160,6 +170,14 @@ export const positionPopover = (
       }
 
       break;
+
+    /**
+     * Calculate position relative to the bounding
+     * box on either the trigger element
+     * specified via the `trigger` prop or
+     * the target specified on the event
+     * that was passed in.
+     */
     case 'trigger':
     default:
       const actualTriggerEl = (triggerEl || event?.target) as HTMLElement | null;
@@ -178,8 +196,19 @@ export const positionPopover = (
       break;
   }
 
+  /**
+   * Get top/left offset that would allow
+   * popover to be positioned on the
+   * preferred side of the reference.
+   */
   const coordinates = calculatePopoverSide(side, referenceCoordinates, contentBoundingBox, isRTL);
-  const alignedCoordinates = calculatePopoverAlign(align, side, referenceCoordinates, contentBoundingBox)
+
+  /**
+   * Get the top/left adjustments that
+   * would allow the popover content
+   * to have the correct alignment.
+   */
+  const alignedCoordinates = calculatePopoverAlign(align, side, referenceCoordinates, contentBoundingBox);
 
   const top = coordinates.top + alignedCoordinates.top;
   const left = coordinates.left + alignedCoordinates.left;
@@ -191,6 +220,12 @@ export const positionPopover = (
   contentEl.style.setProperty('left', `calc(${left}px + var(--offset-x))`);
 }
 
+/**
+ * Calculates the required top/left
+ * values needed to position the popover
+ * content on the side specified in the
+ * `side` prop.
+ */
 const calculatePopoverSide = (
   side: PositionSide,
   triggerBoundingBox: ReferenceCoordinates,
@@ -231,6 +266,12 @@ const calculatePopoverSide = (
   }
 }
 
+/**
+ * Calculates the required top/left
+ * offset values needed to provide the
+ * correct alignment regardless while taking
+ * into account the side the popover is on.
+ */
 const calculatePopoverAlign = (
   align: PositionAlign,
   side: PositionSide,
@@ -248,6 +289,15 @@ const calculatePopoverAlign = (
   }
 }
 
+/**
+ * Calculate the end alignment for
+ * the popover. If side is on the x-axis
+ * then the align values refer to the top
+ * and bottom margins of the content.
+ * If side is on the y-axis then the
+ * align values refer to the left and right
+ * margins of the content.
+ */
 const calculatePopoverEndAlign = (
   side: PositionSide,
   triggerBoundingBox: ReferenceCoordinates,
@@ -272,6 +322,15 @@ const calculatePopoverEndAlign = (
   }
 }
 
+/**
+ * Calculate the center alignment for
+ * the popover. If side is on the x-axis
+ * then the align values refer to the top
+ * and bottom margins of the content.
+ * If side is on the y-axis then the
+ * align values refer to the left and right
+ * margins of the content.
+ */
 const calculatePopoverCenterAlign = (
   side: PositionSide,
   triggerBoundingBox: ReferenceCoordinates,

@@ -16,7 +16,7 @@
   </script>
   <style>
   ion-popover.liam-popover {
-    --offset-x: 10px !important;
+    //--offset-x: 10px !important;
   }
   ion-popover.view-popover {
     --width: 173px;
@@ -38,10 +38,10 @@
   <ion-popover
     show-backdrop="false"
     trigger="liam"
+    reference="trigger"
+    side="top"
+    align="end"
     dismiss-on-select="true"
-    trigger-action="context-menu"
-    side="right"
-    align="center"
     css-class="liam-popover"
   >
     <ion-content>
@@ -103,7 +103,7 @@
               trigger="another-popover-trigger"
               trigger-action="hover"
               dismiss-on-select="true"
-              side="left"
+              side="right"
             >
               <ion-list lines="none">
                 <ion-item button>
