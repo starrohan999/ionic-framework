@@ -39,8 +39,8 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
   contentAnimation
     .addElement(contentEl)
     .beforeStyles({
-      'top': `calc(${top} + var(--offset-y))`,
-      'left': `calc(${left} + var(--offset-x))`,
+      'top': `calc(${top}px + var(--offset-y))`,
+      'left': `calc(${left}px + var(--offset-x))`,
       'transform-origin': `${originY} ${originX}`
     })
     .fromTo('transform', 'scale(0.001)', 'scale(1)');

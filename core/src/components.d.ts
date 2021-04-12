@@ -1694,6 +1694,7 @@ export namespace Components {
          */
         "event": any;
         "getParentPopover": () => Promise<HTMLIonPopoverElement | null>;
+        "inline": boolean;
         /**
           * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
          */
@@ -5048,6 +5049,7 @@ declare namespace LocalJSX {
           * The event to pass to the popover animation.
          */
         "event"?: any;
+        "inline"?: boolean;
         /**
           * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
          */

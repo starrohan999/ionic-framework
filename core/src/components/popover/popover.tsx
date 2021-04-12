@@ -55,6 +55,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
   private parentPopover: HTMLIonPopoverElement | null = null;
   private popoverId = `ion-popover-${popoverIds++}`;
   private destroyTriggerInteraction?: () => void;
+  private coreDelegate: FrameworkDelegate = CoreDelegate();
 
   presented = false;
   lastFocus?: HTMLElement;
@@ -62,7 +63,10 @@ export class Popover implements ComponentInterface, OverlayInterface {
   @Element() el!: HTMLIonPopoverElement;
 
   /** @internal */
-  @Prop() delegate?: FrameworkDelegate = CoreDelegate();
+  @Prop() inline = true;
+
+  /** @internal */
+  @Prop() delegate?: FrameworkDelegate;
 
   /** @internal */
   @Prop() overlayIndex!: number;
@@ -244,7 +248,13 @@ export class Popover implements ComponentInterface, OverlayInterface {
       popover: this.el
     };
 
-    this.usersElement = await attachComponent(this.delegate, container, this.component, ['popover-viewport', (this.el as any)['s-sc']], data);
+    /**
+     * If using popover inline
+     * we potentially need to use the coreDelegate
+     * so that this works in vanilla JS apps
+     */
+    const delegate = (this.inline) ? this.delegate || this.coreDelegate : this.delegate;
+    this.usersElement = await attachComponent(delegate, container, this.component, ['popover-viewport', (this.el as any)['s-sc']], data);
     await deepReady(this.usersElement);
     return present(this, 'popoverEnter', iosEnterAnimation, mdEnterAnimation, {
       event: this.event || event,

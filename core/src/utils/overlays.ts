@@ -52,12 +52,20 @@ export const createOverlay = <T extends HTMLIonOverlayElement>(tagName: string, 
 
       // convert the passed in overlay options into props
       // that get passed down into the new overlay
-      Object.assign(element, opts);
+      Object.assign(element, { ...opts, inline: false });
 
       // append the overlay element to the document body
       getAppRoot(document).appendChild(element);
 
-      return new Promise(resolve => componentOnReady(element, resolve));
+      return new Promise(resolve => componentOnReady(element, () => {
+        if (element.tagName === 'ION-POPOVER') {
+          (element as any).inline = false;
+        }
+
+        console.log('opts', opts, element, (element as any).inline)
+
+        resolve(element as any);
+      }));
     });
   }
   return Promise.resolve() as any;
