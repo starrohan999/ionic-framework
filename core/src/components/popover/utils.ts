@@ -178,13 +178,20 @@ export const positionPopover = (
       break;
   }
 
-  const { top, left } = calculatePopoverOffset(side, referenceCoordinates, contentBoundingBox, isRTL);
+  const coordinates = calculatePopoverSide(side, referenceCoordinates, contentBoundingBox, isRTL);
+  const alignedCoordinates = calculatePopoverAlign(align, side, referenceCoordinates, contentBoundingBox)
+
+  const top = coordinates.top + alignedCoordinates.top;
+  const left = coordinates.left + alignedCoordinates.left;
+
+  console.log('coords', coordinates, 'align', alignedCoordinates)
+
 
   contentEl.style.setProperty('top', `calc(${top}px + var(--offset-y))`);
   contentEl.style.setProperty('left', `calc(${left}px + var(--offset-x))`);
 }
 
-const calculatePopoverOffset = (
+const calculatePopoverSide = (
   side: PositionSide,
   triggerBoundingBox: ReferenceCoordinates,
   contentBoundingBox: DOMRect,
@@ -220,6 +227,71 @@ const calculatePopoverOffset = (
       return {
         top: triggerBoundingBox.top,
         left: (isRTL) ? triggerBoundingBox.left - contentBoundingBox.width : triggerBoundingBox.left - triggerBoundingBox.width
+      }
+  }
+}
+
+const calculatePopoverAlign = (
+  align: PositionAlign,
+  side: PositionSide,
+  triggerBoundingBox: ReferenceCoordinates,
+  contentBoundingBox: DOMRect
+) => {
+  switch (align) {
+    case 'center':
+      return calculatePopoverCenterAlign(side, triggerBoundingBox, contentBoundingBox)
+    case 'end':
+      return calculatePopoverEndAlign(side, triggerBoundingBox, contentBoundingBox)
+    case 'start':
+    default:
+      return { top: 0, left: 0 };
+  }
+}
+
+const calculatePopoverEndAlign = (
+  side: PositionSide,
+  triggerBoundingBox: ReferenceCoordinates,
+  contentBoundingBox: DOMRect
+) => {
+  switch (side) {
+    case 'start':
+    case 'end':
+    case 'left':
+    case 'right':
+      return {
+        top: -(contentBoundingBox.height - triggerBoundingBox.height),
+        left: 0
+      }
+    case 'top':
+    case 'bottom':
+    default:
+      return {
+        top: 0,
+        left: -(contentBoundingBox.width - triggerBoundingBox.width)
+      }
+  }
+}
+
+const calculatePopoverCenterAlign = (
+  side: PositionSide,
+  triggerBoundingBox: ReferenceCoordinates,
+  contentBoundingBox: DOMRect
+) => {
+  switch (side) {
+    case 'start':
+    case 'end':
+    case 'left':
+    case 'right':
+      return {
+        top: -((contentBoundingBox.height / 2) - (triggerBoundingBox.height / 2)),
+        left: 0
+      }
+    case 'top':
+    case 'bottom':
+    default:
+      return {
+        top: 0,
+        left: -((contentBoundingBox.width / 2) - (triggerBoundingBox.width / 2))
       }
   }
 }
