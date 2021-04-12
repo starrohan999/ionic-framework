@@ -7,7 +7,6 @@ import { getPopoverDimensions, positionPopover } from '../utils';
  */
 export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => {
   const { event: ev, size, trigger, reference, side, align } = opts;
-  const POPOVER_MD_BODY_PADDING = 12;
   const doc = (baseEl.ownerDocument as any);
   const isRTL = doc.dir === 'rtl';
 
@@ -15,74 +14,9 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
   const originX = isRTL ? 'right' : 'left';
 
   const contentEl = baseEl.querySelector('.popover-content') as HTMLElement;
-  const { contentWidth, contentHeight } = getPopoverDimensions(size, contentEl, trigger);
+  const { contentWidth } = getPopoverDimensions(size, contentEl, trigger);
 
-  if (size === 'cover') {
-    baseEl.style.setProperty('--width', `${contentWidth}px`);
-  }
-
-  positionPopover(isRTL, contentEl, reference, side, align, trigger, ev);
-
-  /*const bodyWidth = doc.defaultView.innerWidth;
-  const bodyHeight = doc.defaultView.innerHeight;
-
-  // If ev was passed, use that for target element
-  const targetDim =
-    ev && ev.target && (ev.target as HTMLElement).getBoundingClientRect();
-
-  // As per MD spec, by default position the popover below the target (trigger) element
-  const targetTop =
-    targetDim != null && 'bottom' in targetDim
-      ? targetDim.bottom
-      : bodyHeight / 2 - contentHeight / 2;
-
-  const targetLeft =
-    targetDim != null && 'left' in targetDim
-      ? isRTL
-        ? targetDim.left - contentWidth + targetDim.width
-        : targetDim.left
-      : bodyWidth / 2 - contentWidth / 2;
-
-  const targetHeight = (targetDim && targetDim.height) || 0;
-
-  const popoverCSS: { top: any; left: any } = {
-    top: targetTop,
-    left: targetLeft
-  };
-
-  // If the popover left is less than the padding it is off screen
-  // to the left so adjust it, else if the width of the popover
-  // exceeds the body width it is off screen to the right so adjust
-  if (popoverCSS.left < POPOVER_MD_BODY_PADDING) {
-    popoverCSS.left = POPOVER_MD_BODY_PADDING;
-
-    // Same origin in this case for both LTR & RTL
-    // Note: in LTR, originX is already 'left'
-    originX = 'left';
-  } else if (
-    contentWidth + POPOVER_MD_BODY_PADDING + popoverCSS.left >
-    bodyWidth
-  ) {
-    popoverCSS.left = bodyWidth - contentWidth - POPOVER_MD_BODY_PADDING;
-
-    // Same origin in this case for both LTR & RTL
-    // Note: in RTL, originX is already 'right'
-    originX = 'right';
-  }
-
-  // If the popover when popped down stretches past bottom of screen,
-  // make it pop up if there's room above
-  if (
-    targetTop + targetHeight + contentHeight > bodyHeight &&
-    targetTop - contentHeight > 0
-  ) {
-    popoverCSS.top = targetTop - contentHeight - targetHeight;
-    baseEl.className = baseEl.className + ' popover-bottom';
-    originY = 'bottom';
-    // If there isn't room for it to pop up above the target cut it off
-  } else if (targetTop + targetHeight + contentHeight > bodyHeight) {
-    contentEl.style.bottom = POPOVER_MD_BODY_PADDING + 'px';
-  }*/
+  const { top, left } = positionPopover(isRTL, contentEl, reference, side, align, trigger, ev);
 
   const baseAnimation = createAnimation();
   const backdropAnimation = createAnimation();
@@ -105,9 +39,9 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
   contentAnimation
     .addElement(contentEl)
     .beforeStyles({
-      // 'top': `calc(${popoverCSS.top}px + var(--offset-y))`,
-      // 'left': `calc(${popoverCSS.left}px + var(--offset-x))`,
-      // 'transform-origin': `${originY} ${originX}`
+      'top': `calc(${top} + var(--offset-y))`,
+      'left': `calc(${left} + var(--offset-x))`,
+      'transform-origin': `${originY} ${originX}`
     })
     .fromTo('transform', 'scale(0.001)', 'scale(1)');
 
@@ -119,5 +53,8 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
     .addElement(baseEl)
     .easing('cubic-bezier(0.36,0.66,0.04,1)')
     .duration(300)
+    .beforeStyles({
+      '--width': (size === 'cover') ? `${contentWidth}px` : undefined
+    })
     .addAnimation([backdropAnimation, wrapperAnimation, contentAnimation, viewportAnimation]);
 };

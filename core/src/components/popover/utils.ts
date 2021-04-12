@@ -38,6 +38,11 @@ interface ReferenceCoordinates {
   height: number;
 }
 
+interface PopoverPosition {
+  top: number;
+  left: number;
+}
+
 /**
  * Configures the triggerEl to respond
  * to user interaction based upon the triggerAction
@@ -141,7 +146,7 @@ export const positionPopover = (
   align: PositionAlign,
   triggerEl?: HTMLElement,
   event?: MouseEvent
-) => {
+): PopoverPosition => {
   const contentBoundingBox = contentEl.getBoundingClientRect();
   let referenceCoordinates = {
     top: 0,
@@ -159,7 +164,7 @@ export const positionPopover = (
     case 'event':
       if (!event) {
         console.error('No event provided');
-        return;
+        return { top: 0, left: 0 };
       }
 
       referenceCoordinates = {
@@ -183,7 +188,7 @@ export const positionPopover = (
       const actualTriggerEl = (triggerEl || event?.target) as HTMLElement | null;
       if (!actualTriggerEl) {
         console.error('No trigger element found');
-        return;
+        return { top: 0, left: 0 };
       }
       const triggerBoundingBox = actualTriggerEl.getBoundingClientRect();
       referenceCoordinates = {
@@ -213,11 +218,7 @@ export const positionPopover = (
   const top = coordinates.top + alignedCoordinates.top;
   const left = coordinates.left + alignedCoordinates.left;
 
-  console.log('coords', coordinates, 'align', alignedCoordinates)
-
-
-  contentEl.style.setProperty('top', `calc(${top}px + var(--offset-y))`);
-  contentEl.style.setProperty('left', `calc(${left}px + var(--offset-x))`);
+  return { top, left };
 }
 
 /**
