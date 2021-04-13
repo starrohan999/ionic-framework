@@ -65,6 +65,15 @@ export const configureTriggerInteraction = (
   popoverEl: HTMLIonPopoverElement
 ) => {
   let triggerCallbacks: TriggerCallback[] = [];
+
+  /**
+   * Based upon the kind of trigger interaction
+   * the user wants, we setup the correct event
+   * listeners. We always need to add a click
+   * event with stopPropagation so that
+   * clicking a trigger element does not
+   * dismiss popovers with `dismiss-on-select="true"`.
+   */
   switch (triggerAction) {
     case 'hover':
       let hoverTimeout: any;
@@ -108,6 +117,10 @@ export const configureTriggerInteraction = (
               popoverEl.dismiss(undefined, undefined, false);
             }
           }
+        },
+        {
+          eventName: 'click',
+          callback: (ev: Event) => ev.stopPropagation()
         }
       ]
       break;
@@ -123,6 +136,10 @@ export const configureTriggerInteraction = (
             ev.preventDefault();
             popoverEl.present(ev);
           }
+        },
+        {
+          eventName: 'click',
+          callback: (ev: Event) => ev.stopPropagation()
         }
       ]
       break;
@@ -131,7 +148,10 @@ export const configureTriggerInteraction = (
       triggerCallbacks = [
         {
           eventName: 'click',
-          callback: (ev: Event) => popoverEl.present(ev)
+          callback: (ev: Event) => {
+            ev.stopPropagation();
+            popoverEl.present(ev);
+          }
         }
       ];
       break;
