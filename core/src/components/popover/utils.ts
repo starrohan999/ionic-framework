@@ -294,7 +294,7 @@ const calculatePopoverSide = (
     case 'end':
       return {
         top: triggerBoundingBox.top,
-        left: (isRTL) ? triggerBoundingBox.left - contentBoundingBox.width : triggerBoundingBox.left - triggerBoundingBox.width
+        left: (isRTL) ? triggerBoundingBox.left - contentBoundingBox.width : triggerBoundingBox.left + triggerBoundingBox.width
       }
   }
 }
