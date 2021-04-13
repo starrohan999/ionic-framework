@@ -187,7 +187,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
   /**
    * Describes how to align the popover content with the `reference` point.
    */
-  @Prop() align: PositionAlign = 'start';
+  @Prop() alignment: PositionAlign = 'start';
 
   @Watch('trigger')
   @Watch('triggerAction')
@@ -262,7 +262,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
       trigger: this.triggerEl,
       reference: this.reference,
       side: this.side,
-      align: this.align
+      align: this.alignment
     });
   }
 

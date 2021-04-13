@@ -1652,7 +1652,7 @@ export namespace Components {
         /**
           * Describes how to align the popover content with the `reference` point.
          */
-        "align": PositionAlign;
+        "alignment": PositionAlign;
         /**
           * If `true`, the popover will animate.
          */
@@ -5015,7 +5015,7 @@ declare namespace LocalJSX {
         /**
           * Describes how to align the popover content with the `reference` point.
          */
-        "align"?: PositionAlign;
+        "alignment"?: PositionAlign;
         /**
           * If `true`, the popover will animate.
          */
