@@ -1,22 +1,31 @@
 import { Animation } from '../../../interface';
 import { createAnimation } from '../../../utils/animation/animation';
-import { getPopoverDimensions, positionPopover } from '../utils';
+import { getPopoverDimensions, getPopoverPosition } from '../utils';
+
+const POPOVER_IOS_BODY_PADDING = 5;
+
 /**
  * iOS Popover Enter Animation
  */
 export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => {
   const { event: ev, size, trigger, reference, side, align } = opts;
-  const originY = 'top';
-  const originX = 'left';
   const doc = (baseEl.ownerDocument as any);
   const isRTL = doc.dir === 'rtl';
-  // const bodyWidth = doc.defaultView.innerWidth;
-  // const bodyHeight = doc.defaultView.innerHeight;
+  const bodyWidth = doc.defaultView.innerWidth;
+  const bodyHeight = doc.defaultView.innerHeight;
+
+  const originX = 'left';
+  const originY = 'top';
 
   const contentEl = baseEl.querySelector('.popover-content') as HTMLElement;
-  const { contentWidth } = getPopoverDimensions(size, contentEl, trigger);
+  const { contentWidth, contentHeight } = getPopoverDimensions(size, contentEl, trigger);
 
-  const { top, left } = positionPopover(isRTL, contentEl, reference, side, align, trigger, ev);
+  const defaultPosition = {
+    top: bodyHeight / 2 - contentHeight / 2,
+    left: bodyWidth / 2 - contentWidth / 2
+  }
+
+  const { top, left } = getPopoverPosition(isRTL, contentEl, reference, side, align, defaultPosition, trigger, ev);
 
   contentEl.style.setProperty('transform-origin', `${originY} ${originX}`);
   contentEl.style.setProperty('top', `calc(${top}px + var(--offset-y, 0px))`);

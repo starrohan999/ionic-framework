@@ -31,7 +31,7 @@ interface TriggerCallback {
   callback: (ev: any) => void;
 }
 
-interface ReferenceCoordinates {
+export interface ReferenceCoordinates {
   top: number;
   left: number;
   width: number;
@@ -41,6 +41,15 @@ interface ReferenceCoordinates {
 interface PopoverPosition {
   top: number;
   left: number;
+  referenceCoordinates?: ReferenceCoordinates;
+}
+
+export interface PopoverStyles {
+  top: number;
+  left: number;
+  bottom?: number;
+  originX: string;
+  originY: string;
 }
 
 /**
@@ -138,12 +147,13 @@ export const configureTriggerInteraction = (
  * the reference point, preferred side, alignment
  * and viewport dimensions.
  */
-export const positionPopover = (
+export const getPopoverPosition = (
   isRTL: boolean,
   contentEl: HTMLElement,
   reference: PositionReference,
   side: PositionSide,
   align: PositionAlign,
+  defaultPosition: PopoverPosition,
   triggerEl?: HTMLElement,
   event?: MouseEvent
 ): PopoverPosition => {
@@ -164,7 +174,7 @@ export const positionPopover = (
     case 'event':
       if (!event) {
         console.error('No event provided');
-        return { top: 0, left: 0 };
+        return defaultPosition;
       }
 
       referenceCoordinates = {
@@ -188,7 +198,7 @@ export const positionPopover = (
       const actualTriggerEl = (triggerEl || event?.target) as HTMLElement | null;
       if (!actualTriggerEl) {
         console.error('No trigger element found');
-        return { top: 0, left: 0 };
+        return defaultPosition;
       }
       const triggerBoundingBox = actualTriggerEl.getBoundingClientRect();
       referenceCoordinates = {
@@ -218,7 +228,7 @@ export const positionPopover = (
   const top = coordinates.top + alignedCoordinates.top;
   const left = coordinates.left + alignedCoordinates.left;
 
-  return { top, left };
+  return { top, left, referenceCoordinates };
 }
 
 /**
@@ -262,7 +272,7 @@ const calculatePopoverSide = (
     case 'end':
       return {
         top: triggerBoundingBox.top,
-        left: (isRTL) ? triggerBoundingBox.left - contentBoundingBox.width : triggerBoundingBox.left + triggerBoundingBox.width
+        left: (isRTL) ? triggerBoundingBox.left - contentBoundingBox.width : triggerBoundingBox.left - triggerBoundingBox.width
       }
   }
 }
