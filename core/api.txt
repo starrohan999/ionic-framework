@@ -843,7 +843,7 @@ ion-popover,prop,triggerAction,"click" | "context-menu" | "hover",'click',false,
 ion-popover,method,dismiss,dismiss(data?: any, role?: string | undefined, dismissParentPopover?: boolean) => Promise<boolean>
 ion-popover,method,onDidDismiss,onDidDismiss<T = any>() => Promise<OverlayEventDetail<T>>
 ion-popover,method,onWillDismiss,onWillDismiss<T = any>() => Promise<OverlayEventDetail<T>>
-ion-popover,method,present,present(event?: any) => Promise<void>
+ion-popover,method,present,present(event?: any, focusFirstItem?: boolean) => Promise<void>
 ion-popover,event,ionPopoverDidDismiss,OverlayEventDetail<any>,true
 ion-popover,event,ionPopoverDidPresent,void,true
 ion-popover,event,ionPopoverWillDismiss,OverlayEventDetail<any>,true

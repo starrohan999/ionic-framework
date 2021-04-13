@@ -46,11 +46,10 @@
             <ion-icon name="ellipsis-horizontal"></ion-icon>
           </ion-button>
           <ion-popover
+            animated="false"
             dismiss-on-select="true"
             show-backdrop="false"
             trigger="first-trigger"
-            trigger-action="context-menu"
-            reference="event"
             side="right"
           >
             <ion-content>
@@ -63,6 +62,7 @@
                 </ion-item>
 
                 <ion-popover
+                  animated="false"
                   trigger="open-with-popover"
                   trigger-action="hover"
                   side="right"
@@ -117,6 +117,7 @@
                 </ion-item>
 
                 <ion-popover
+                  animated="false"
                   trigger="share-popover"
                   trigger-action="hover"
                   side="right"

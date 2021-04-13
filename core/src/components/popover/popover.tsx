@@ -12,7 +12,7 @@ import { iosEnterAnimation } from './animations/ios.enter';
 import { iosLeaveAnimation } from './animations/ios.leave';
 import { mdEnterAnimation } from './animations/md.enter';
 import { mdLeaveAnimation } from './animations/md.leave';
-import { configureTriggerInteraction } from './utils';
+import { configureKeyboardInteraction, configureTriggerInteraction } from './utils';
 
 const CoreDelegate = () => {
   let Cmp: any;
@@ -55,6 +55,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
   private parentPopover: HTMLIonPopoverElement | null = null;
   private popoverId = `ion-popover-${popoverIds++}`;
   private destroyTriggerInteraction?: () => void;
+  private destroyKeyboardInteraction?: () => void;
   private coreDelegate: FrameworkDelegate = CoreDelegate();
 
   presented = false;
@@ -235,7 +236,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
    * Present the popover overlay after it has been created.
    */
   @Method()
-  async present(event?: any): Promise<void> {
+  async present(event?: any, focusFirstItem = false): Promise<void> {
     if (this.presented) {
       return;
     }
@@ -256,13 +257,17 @@ export class Popover implements ComponentInterface, OverlayInterface {
     const delegate = (this.inline) ? this.delegate || this.coreDelegate : this.delegate;
     this.usersElement = await attachComponent(delegate, container, this.component, ['popover-viewport', (this.el as any)['s-sc']], data);
     await deepReady(this.usersElement);
+
+    this.configureKeyboardInteraction();
+
     return present(this, 'popoverEnter', iosEnterAnimation, mdEnterAnimation, {
       event: this.event || event,
       size: this.size,
       trigger: this.triggerEl,
       reference: this.reference,
       side: this.side,
-      align: this.alignment
+      align: this.alignment,
+      focusFirstDescendant: focusFirstItem
     });
   }
 
@@ -347,6 +352,16 @@ export class Popover implements ComponentInterface, OverlayInterface {
     this.destroyTriggerInteraction = configureTriggerInteraction(triggerEl, triggerAction, el);
   }
 
+  private configureKeyboardInteraction = () => {
+    const { destroyKeyboardInteraction, el } = this;
+
+    if (destroyKeyboardInteraction) {
+      destroyKeyboardInteraction();
+    }
+
+    this.destroyKeyboardInteraction = configureKeyboardInteraction(el);
+  }
+
   render() {
     const mode = getIonMode(this);
     const { onLifecycle, popoverId, parentPopover, dismissOnSelect } = this;
@@ -379,8 +394,6 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
         <div class="popover-wrapper ion-overlay-wrapper">
           <div class="popover-arrow"></div>
-          {/* TODO: how do we exclude trigger elements from onClick handler? */}
-
           <div
             class="popover-content"
             onClick={dismissOnSelect ? () => this.dismiss() : undefined}

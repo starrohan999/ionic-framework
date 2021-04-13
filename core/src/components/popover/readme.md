@@ -422,7 +422,7 @@ Type: `Promise<OverlayEventDetail<T>>`
 
 
 
-### `present(event?: any) => Promise<void>`
+### `present(event?: any, focusFirstItem?: boolean) => Promise<void>`
 
 Present the popover overlay after it has been created.
 

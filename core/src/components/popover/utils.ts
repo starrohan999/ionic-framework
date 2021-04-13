@@ -121,6 +121,10 @@ export const configureTriggerInteraction = (
         {
           eventName: 'click',
           callback: (ev: Event) => ev.stopPropagation()
+        },
+        {
+          eventName: 'ionPopoverActivateTrigger',
+          callback: (ev: Event) => popoverEl.present(ev, true)
         }
       ]
       break;
@@ -140,6 +144,10 @@ export const configureTriggerInteraction = (
         {
           eventName: 'click',
           callback: (ev: Event) => ev.stopPropagation()
+        },
+        {
+          eventName: 'ionPopoverActivateTrigger',
+          callback: (ev: Event) => popoverEl.present(ev, true)
         }
       ]
       break;
@@ -152,16 +160,65 @@ export const configureTriggerInteraction = (
             ev.stopPropagation();
             popoverEl.present(ev);
           }
+        },
+        {
+          eventName: 'ionPopoverActivateTrigger',
+          callback: (ev: Event) => popoverEl.present(ev, true)
         }
       ];
       break;
   }
 
   triggerCallbacks.forEach(({ eventName, callback }) => triggerEl.addEventListener(eventName, callback));
+  triggerEl.setAttribute('data-ion-popover-trigger', 'true');
 
   return () => {
     triggerCallbacks.forEach(({ eventName, callback }) => triggerEl.removeEventListener(eventName, callback));
+    triggerEl.removeAttribute('data-ion-popover-trigger');
   }
+}
+
+const isTriggerElement = (el: HTMLElement) => el.hasAttribute('data-ion-popover-trigger');
+
+export const configureKeyboardInteraction = (
+  popoverEl: HTMLIonPopoverElement
+) => {
+  const activePopover = popoverEl;
+  const callback = async (ev: KeyboardEvent) => {
+    switch (ev.key) {
+      case 'ArrowLeft':
+        const parentPopover = await activePopover.getParentPopover();
+        if (parentPopover) {
+          activePopover.dismiss(undefined, undefined, false);
+        }
+        break;
+      case 'ArrowDown':
+        console.log('noop');
+
+        break;
+      case 'ArrowUp':
+        console.log('noop');
+        break;
+      case 'ArrowRight':
+      case ' ':
+      case 'Enter':
+        const activeItem = document.activeElement as HTMLElement | null;
+        if (activeItem && activeItem.tagName === 'ION-ITEM' && isTriggerElement(activeItem)) {
+          const rightEvent = new CustomEvent('ionPopoverActivateTrigger');
+          activeItem.dispatchEvent(rightEvent);
+        }
+        break;
+      default:
+        console.log('default case', ev);
+        break;
+    }
+  };
+
+  popoverEl.addEventListener('keydown', callback);
+
+  return () => {
+    popoverEl.removeEventListener('keydown', callback);
+  };
 }
 
 /**

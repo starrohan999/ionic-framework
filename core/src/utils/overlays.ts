@@ -281,7 +281,11 @@ export const present = async (
   }
 
   if (overlay.keyboardClose) {
-    overlay.el.focus();
+    if (opts.focusFirstDescendant) {
+      focusFirstDescendant(overlay.el, overlay.el as HTMLIonOverlayElement)
+    } else {
+      overlay.el.focus();
+    }
   }
 };
 

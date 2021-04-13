@@ -1719,7 +1719,7 @@ export namespace Components {
         /**
           * Present the popover overlay after it has been created.
          */
-        "present": (event?: any) => Promise<void>;
+        "present": (event?: any, focusFirstItem?: boolean) => Promise<void>;
         /**
           * Describes what to position the popover relative to. If `'trigger'`, the popover will be positioned relative to the trigger button. If passing in an event, this is determined via event.target. If `'event'`, the popover will be positioned relative to the x/y coordinates of the trigger action. If passing in an event, this is determined via event.clientX and event.clientY.
          */
