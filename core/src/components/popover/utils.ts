@@ -50,6 +50,8 @@ export interface PopoverStyles {
   bottom?: number;
   originX: string;
   originY: string;
+  checkSafeAreaLeft: boolean;
+  checkSafeAreaRight: boolean;
 }
 
 /**

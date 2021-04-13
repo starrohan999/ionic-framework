@@ -20,6 +20,8 @@ const calculateWindowAdjustment = (
   let bottom;
   let originX = isRTL ? 'right' : 'left';
   let originY = 'top';
+  const checkSafeAreaLeft = false;
+  const checkSafeAreaRight = false;
   const triggerTop = triggerCoordinates ? triggerCoordinates.top + triggerCoordinates.height : bodyHeight / 2 - contentHeight / 2;
   const triggerHeight = triggerCoordinates ? triggerCoordinates.height : 0;
 
@@ -61,7 +63,7 @@ const calculateWindowAdjustment = (
     }
   }
 
-  return { top, left, bottom, originX, originY };
+  return { top, left, bottom, originX, originY, checkSafeAreaLeft, checkSafeAreaRight };
 }
 
 /**
@@ -112,7 +114,7 @@ export const mdEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation => 
       'transform-origin': `${originY} ${originX}`
     })
     .beforeAddWrite(() => {
-      if (bottom) {
+      if (bottom !== undefined) {
         contentEl.style.setProperty('bottom', `${bottom}px`);
       }
     })
