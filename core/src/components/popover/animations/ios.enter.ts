@@ -1,71 +1,8 @@
 import { Animation } from '../../../interface';
 import { createAnimation } from '../../../utils/animation/animation';
-import { PopoverStyles, ReferenceCoordinates, getPopoverDimensions, getPopoverPosition } from '../utils';
+import { calculateWindowAdjustment, getPopoverDimensions, getPopoverPosition } from '../utils';
 
 const POPOVER_IOS_BODY_PADDING = 5;
-
-const calculateWindowAdjustment = (
-  coordTop: number,
-  coordLeft: number,
-  bodyPadding: number,
-  bodyWidth: number,
-  bodyHeight: number,
-  contentWidth: number,
-  contentHeight: number,
-  triggerCoordinates?: ReferenceCoordinates
-): PopoverStyles => {
-  let left = coordLeft;
-  let top = coordTop;
-  let bottom;
-  let originX = 'left';
-  let originY = 'top';
-  let checkSafeAreaLeft = false;
-  let checkSafeAreaRight = false;
-  const triggerTop = triggerCoordinates ? triggerCoordinates.top + triggerCoordinates.height : bodyHeight / 2 - contentHeight / 2;
-  const triggerHeight = triggerCoordinates ? triggerCoordinates.height : 0;
-
-  /**
-   * Adjust popover so it does not
-   * go off the left of the screen.
-   */
-  if (left < bodyPadding + 25) {
-    left = bodyPadding;
-    checkSafeAreaLeft = true;
-  /**
-   * Adjust popover so it does not
-   * go off the right of the screen.
-   */
-  } else if (
-    contentWidth + bodyPadding + left + 25 > bodyWidth
-  ) {
-    checkSafeAreaRight = true;
-    left = bodyWidth - contentWidth - bodyPadding;
-    originX = 'right';
-  }
-
-  /**
-   * Adjust popover so it does not
-   * go off the top of the screen.
-   */
-  if (
-    triggerTop + triggerHeight + contentHeight > bodyHeight
-  ) {
-    if (triggerTop - contentHeight > 0) {
-      // TODO add arrow stuff
-      top = triggerTop - contentHeight - triggerHeight;
-      originY = 'bottom';
-
-    /**
-     * If not enough room for popover to appear
-     * above trigger, then cut it off.
-     */
-    } else {
-      bottom = bodyPadding;
-    }
-  }
-
-  return { top, left, bottom, originX, originY, checkSafeAreaLeft, checkSafeAreaRight };
-}
 
 /**
  * iOS Popover Enter Animation
@@ -87,7 +24,7 @@ export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation =>
 
   const results = getPopoverPosition(isRTL, contentEl, reference, side, align, defaultPosition, trigger, ev);
 
-  const { originX, originY, top, left, bottom, checkSafeAreaLeft, checkSafeAreaRight } = calculateWindowAdjustment(results.top, results.left, POPOVER_IOS_BODY_PADDING, bodyWidth, bodyHeight, contentWidth, contentHeight, results.referenceCoordinates);
+  const { originX, originY, top, left, bottom, checkSafeAreaLeft, checkSafeAreaRight } = calculateWindowAdjustment(results.top, results.left, POPOVER_IOS_BODY_PADDING, bodyWidth, bodyHeight, contentWidth, contentHeight, isRTL, 25, results.referenceCoordinates);
 
   const baseAnimation = createAnimation();
   const backdropAnimation = createAnimation();

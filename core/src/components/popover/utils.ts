@@ -1,31 +1,6 @@
 import { PopoverSize, PositionAlign, PositionReference, PositionSide, TriggerAction } from '../../interface';
 import { raf } from '../../utils/helpers';
 
-/**
- * Returns the recommended dimensions of the popover
- * that takes into account whether or not the width
- * should match the trigger width.
- */
-export const getPopoverDimensions = (
-  size: PopoverSize,
-  contentEl: HTMLElement,
-  triggerEl?: HTMLElement
-) => {
-  const contentDimentions = contentEl.getBoundingClientRect();
-  const contentHeight = contentDimentions.height;
-  let contentWidth = contentDimentions.width;
-
-  if (size === 'cover' && triggerEl) {
-    const triggerDimensions = triggerEl.getBoundingClientRect();
-    contentWidth = triggerDimensions.width;
-  }
-
-  return {
-    contentWidth,
-    contentHeight
-  }
-}
-
 interface TriggerCallback {
   eventName: string;
   callback: (ev: any) => void;
@@ -52,6 +27,31 @@ export interface PopoverStyles {
   originY: string;
   checkSafeAreaLeft: boolean;
   checkSafeAreaRight: boolean;
+}
+
+/**
+ * Returns the recommended dimensions of the popover
+ * that takes into account whether or not the width
+ * should match the trigger width.
+ */
+export const getPopoverDimensions = (
+  size: PopoverSize,
+  contentEl: HTMLElement,
+  triggerEl?: HTMLElement
+) => {
+  const contentDimentions = contentEl.getBoundingClientRect();
+  const contentHeight = contentDimentions.height;
+  let contentWidth = contentDimentions.width;
+
+  if (size === 'cover' && triggerEl) {
+    const triggerDimensions = triggerEl.getBoundingClientRect();
+    contentWidth = triggerDimensions.width;
+  }
+
+  return {
+    contentWidth,
+    contentHeight
+  }
 }
 
 /**
@@ -366,4 +366,75 @@ const calculatePopoverCenterAlign = (
         left: -((contentBoundingBox.width / 2) - (triggerBoundingBox.width / 2))
       }
   }
+}
+
+/**
+ * Adjusts popover positioning coordinates
+ * such that popover does not appear offscreen
+ * or overlapping safe area bounds.
+ */
+export const calculateWindowAdjustment = (
+  coordTop: number,
+  coordLeft: number,
+  bodyPadding: number,
+  bodyWidth: number,
+  bodyHeight: number,
+  contentWidth: number,
+  contentHeight: number,
+  isRTL: boolean,
+  safeAreaMargin: number,
+  triggerCoordinates?: ReferenceCoordinates
+): PopoverStyles => {
+  let left = coordLeft;
+  let top = coordTop;
+  let bottom;
+  let originX = isRTL ? 'right' : 'left';
+  let originY = 'top';
+  let checkSafeAreaLeft = false;
+  let checkSafeAreaRight = false;
+  const triggerTop = triggerCoordinates ? triggerCoordinates.top + triggerCoordinates.height : bodyHeight / 2 - contentHeight / 2;
+  const triggerHeight = triggerCoordinates ? triggerCoordinates.height : 0;
+
+  /**
+   * Adjust popover so it does not
+   * go off the left of the screen.
+   */
+  if (left < bodyPadding + safeAreaMargin) {
+    left = bodyPadding;
+    checkSafeAreaLeft = true;
+    originX = 'left';
+  /**
+   * Adjust popover so it does not
+   * go off the right of the screen.
+   */
+  } else if (
+    contentWidth + bodyPadding + left + safeAreaMargin > bodyWidth
+  ) {
+    checkSafeAreaRight = true;
+    left = bodyWidth - contentWidth - bodyPadding;
+    originX = 'right';
+  }
+
+  /**
+   * Adjust popover so it does not
+   * go off the top of the screen.
+   */
+  if (
+    triggerTop + triggerHeight + contentHeight > bodyHeight
+  ) {
+    if (triggerTop - contentHeight > 0) {
+      // TODO add arrow stuff
+      top = triggerTop - contentHeight - triggerHeight;
+      originY = 'bottom';
+
+    /**
+     * If not enough room for popover to appear
+     * above trigger, then cut it off.
+     */
+    } else {
+      bottom = bodyPadding;
+    }
+  }
+
+  return { top, left, bottom, originX, originY, checkSafeAreaLeft, checkSafeAreaRight };
 }
