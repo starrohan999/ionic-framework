@@ -1,5 +1,5 @@
 import { PopoverSize, PositionAlign, PositionReference, PositionSide, TriggerAction } from '../../interface';
-import { raf } from '../../utils/helpers';
+import { clamp, raf } from '../../utils/helpers';
 
 interface TriggerCallback {
   eventName: string;
@@ -183,27 +183,38 @@ const isTriggerElement = (el: HTMLElement) => el.hasAttribute('data-ion-popover-
 export const configureKeyboardInteraction = (
   popoverEl: HTMLIonPopoverElement
 ) => {
-  const activePopover = popoverEl;
+
+  let currentIndex = -1;
   const callback = async (ev: KeyboardEvent) => {
+
+    /**
+     * Select all ion-items that are not children of child popovers.
+     * i.e. only selects ion-item elements that are part of this popover
+     */
+    const items = popoverEl.querySelectorAll('ion-item:not(ion-popover ion-popover *)');
+
     switch (ev.key) {
       case 'ArrowLeft':
-        const parentPopover = await activePopover.getParentPopover();
+        const parentPopover = await popoverEl.getParentPopover();
         if (parentPopover) {
-          activePopover.dismiss(undefined, undefined, false);
+          popoverEl.dismiss(undefined, undefined, false);
         }
         break;
       case 'ArrowDown':
-        console.log('noop');
-
+        currentIndex = clamp(0, currentIndex + 1, items.length - 1);
+        const nextItem = items[currentIndex] as HTMLElement;
+        nextItem.focus();
         break;
       case 'ArrowUp':
-        console.log('noop');
+        currentIndex = clamp(0, currentIndex - 1, items.length - 1);
+        const prevItem = items[currentIndex] as HTMLElement;
+        prevItem.focus();
         break;
       case 'ArrowRight':
       case ' ':
       case 'Enter':
         const activeItem = document.activeElement as HTMLElement | null;
-        if (activeItem && activeItem.tagName === 'ION-ITEM' && isTriggerElement(activeItem)) {
+        if (activeItem && isTriggerElement(activeItem)) {
           const rightEvent = new CustomEvent('ionPopoverActivateTrigger');
           activeItem.dispatchEvent(rightEvent);
         }
