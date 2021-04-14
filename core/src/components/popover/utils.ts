@@ -1,5 +1,5 @@
 import { PopoverSize, PositionAlign, PositionReference, PositionSide, TriggerAction } from '../../interface';
-import { clamp, raf } from '../../utils/helpers';
+import { raf } from '../../utils/helpers';
 
 interface TriggerCallback {
   eventName: string;
@@ -178,38 +178,101 @@ export const configureTriggerInteraction = (
   }
 }
 
+/**
+ * Returns the index of an ion-item in an array of ion-items.
+ */
+const getIndexOfItem = (items: HTMLIonItemElement[], item: HTMLElement) => {
+  if (item.tagName !== 'ION-ITEM') return -1;
+
+  return items.findIndex(el => el === item)
+};
+
+/**
+ * Given an array of elements and a currently focused ion-item
+ * returns the next ion-item relative to the focused one or
+ * undefined.
+ */
+const getNextItem = (items: HTMLIonItemElement[], currentItem: HTMLElement) => {
+  const currentItemIndex = getIndexOfItem(items, currentItem);
+  return items[currentItemIndex + 1];
+}
+
+/**
+ * Given an array of elements and a currently focused ion-item
+ * returns the previous ion-item relative to the focused one or
+ * undefined.
+ */
+const getPrevItem = (items: HTMLIonItemElement[], currentItem: HTMLElement) => {
+  const currentItemIndex = getIndexOfItem(items, currentItem);
+  return items[currentItemIndex - 1];
+}
+
+/**
+ * Returns `true` if `el` has been designated
+ * as a trigger element for an ion-popover.
+ */
 const isTriggerElement = (el: HTMLElement) => el.hasAttribute('data-ion-popover-trigger');
 
 export const configureKeyboardInteraction = (
   popoverEl: HTMLIonPopoverElement
 ) => {
 
-  let currentIndex = -1;
   const callback = async (ev: KeyboardEvent) => {
+    let items = [] as any;
 
     /**
-     * Select all ion-items that are not children of child popovers.
-     * i.e. only selects ion-item elements that are part of this popover
+     * Complex selectors with :not() are :not supported
+     * in older versions of Chromium so we need to do a
+     * try/catch here so errors are not thrown.
      */
-    const items = popoverEl.querySelectorAll('ion-item:not(ion-popover ion-popover *)');
+    try {
+
+      /**
+       * Select all ion-items that are not children of child popovers.
+       * i.e. only select ion-item elements that are part of this popover
+       */
+      items = Array.from(popoverEl.querySelectorAll('ion-item:not(ion-popover ion-popover *)'));
+    /* tslint:disable-next-line */
+    } catch {}
 
     switch (ev.key) {
+
+      /**
+       * If we are in a child popover
+       * then pressing the left arrow key
+       * should close this popover and move
+       * focus to the popover that presented
+       * this one.
+       */
       case 'ArrowLeft':
         const parentPopover = await popoverEl.getParentPopover();
         if (parentPopover) {
           popoverEl.dismiss(undefined, undefined, false);
         }
         break;
+      /**
+       * ArrowDown should move focus to the next focusable ion-item.
+       */
       case 'ArrowDown':
-        currentIndex = clamp(0, currentIndex + 1, items.length - 1);
-        const nextItem = items[currentIndex] as HTMLElement;
-        nextItem.focus();
+        const nextItem = getNextItem(items, document.activeElement as HTMLElement);
+        if (nextItem) {
+          nextItem.focus();
+        }
         break;
+      /**
+       * ArrowUp should move focus to the previous focusable ion-item.
+       */
       case 'ArrowUp':
-        currentIndex = clamp(0, currentIndex - 1, items.length - 1);
-        const prevItem = items[currentIndex] as HTMLElement;
-        prevItem.focus();
+        const prevItem = getPrevItem(items, document.activeElement as HTMLElement);
+        if (prevItem) {
+          prevItem.focus();
+        }
         break;
+      /**
+       * ArrowRight, Spacebar, or Enter should activate
+       * the currently focused trigger item to open a
+       * popover if the element is a trigger item.
+       */
       case 'ArrowRight':
       case ' ':
       case 'Enter':
@@ -220,16 +283,12 @@ export const configureKeyboardInteraction = (
         }
         break;
       default:
-        console.log('default case', ev);
         break;
     }
   };
 
   popoverEl.addEventListener('keydown', callback);
-
-  return () => {
-    popoverEl.removeEventListener('keydown', callback);
-  };
+  return () => popoverEl.removeEventListener('keydown', callback);
 }
 
 /**
