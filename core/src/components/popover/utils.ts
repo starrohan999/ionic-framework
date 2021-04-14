@@ -181,7 +181,7 @@ export const configureTriggerInteraction = (
 /**
  * Returns the index of an ion-item in an array of ion-items.
  */
-const getIndexOfItem = (items: HTMLIonItemElement[], item: HTMLElement | null) => {
+export const getIndexOfItem = (items: HTMLIonItemElement[], item: HTMLElement | null) => {
   if (!item || item.tagName !== 'ION-ITEM') { return -1; }
 
   return items.findIndex(el => el === item)
@@ -192,7 +192,7 @@ const getIndexOfItem = (items: HTMLIonItemElement[], item: HTMLElement | null) =
  * returns the next ion-item relative to the focused one or
  * undefined.
  */
-const getNextItem = (items: HTMLIonItemElement[], currentItem: HTMLElement | null) => {
+export const getNextItem = (items: HTMLIonItemElement[], currentItem: HTMLElement | null) => {
   const currentItemIndex = getIndexOfItem(items, currentItem);
   return items[currentItemIndex + 1];
 }
@@ -202,7 +202,7 @@ const getNextItem = (items: HTMLIonItemElement[], currentItem: HTMLElement | nul
  * returns the previous ion-item relative to the focused one or
  * undefined.
  */
-const getPrevItem = (items: HTMLIonItemElement[], currentItem: HTMLElement | null) => {
+export const getPrevItem = (items: HTMLIonItemElement[], currentItem: HTMLElement | null) => {
   const currentItemIndex = getIndexOfItem(items, currentItem);
   return items[currentItemIndex - 1];
 }
@@ -211,7 +211,7 @@ const getPrevItem = (items: HTMLIonItemElement[], currentItem: HTMLElement | nul
  * Returns `true` if `el` has been designated
  * as a trigger element for an ion-popover.
  */
-const isTriggerElement = (el: HTMLElement) => el.hasAttribute('data-ion-popover-trigger');
+export const isTriggerElement = (el: HTMLElement) => el.hasAttribute('data-ion-popover-trigger');
 
 export const configureKeyboardInteraction = (
   popoverEl: HTMLIonPopoverElement
