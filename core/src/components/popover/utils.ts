@@ -181,8 +181,8 @@ export const configureTriggerInteraction = (
 /**
  * Returns the index of an ion-item in an array of ion-items.
  */
-const getIndexOfItem = (items: HTMLIonItemElement[], item: HTMLElement) => {
-  if (item.tagName !== 'ION-ITEM') return -1;
+const getIndexOfItem = (items: HTMLIonItemElement[], item: HTMLElement | null) => {
+  if (!item || item.tagName !== 'ION-ITEM') return -1;
 
   return items.findIndex(el => el === item)
 };
@@ -192,7 +192,7 @@ const getIndexOfItem = (items: HTMLIonItemElement[], item: HTMLElement) => {
  * returns the next ion-item relative to the focused one or
  * undefined.
  */
-const getNextItem = (items: HTMLIonItemElement[], currentItem: HTMLElement) => {
+const getNextItem = (items: HTMLIonItemElement[], currentItem: HTMLElement | null) => {
   const currentItemIndex = getIndexOfItem(items, currentItem);
   return items[currentItemIndex + 1];
 }
@@ -202,7 +202,7 @@ const getNextItem = (items: HTMLIonItemElement[], currentItem: HTMLElement) => {
  * returns the previous ion-item relative to the focused one or
  * undefined.
  */
-const getPrevItem = (items: HTMLIonItemElement[], currentItem: HTMLElement) => {
+const getPrevItem = (items: HTMLIonItemElement[], currentItem: HTMLElement | null) => {
   const currentItemIndex = getIndexOfItem(items, currentItem);
   return items[currentItemIndex - 1];
 }
@@ -218,6 +218,7 @@ export const configureKeyboardInteraction = (
 ) => {
 
   const callback = async (ev: KeyboardEvent) => {
+    const activeElement = document.activeElement as HTMLElement | null;
     let items = [] as any;
 
     /**
@@ -254,7 +255,7 @@ export const configureKeyboardInteraction = (
        * ArrowDown should move focus to the next focusable ion-item.
        */
       case 'ArrowDown':
-        const nextItem = getNextItem(items, document.activeElement as HTMLElement);
+        const nextItem = getNextItem(items, activeElement);
         if (nextItem) {
           nextItem.focus();
         }
@@ -263,7 +264,7 @@ export const configureKeyboardInteraction = (
        * ArrowUp should move focus to the previous focusable ion-item.
        */
       case 'ArrowUp':
-        const prevItem = getPrevItem(items, document.activeElement as HTMLElement);
+        const prevItem = getPrevItem(items, activeElement);
         if (prevItem) {
           prevItem.focus();
         }
@@ -276,10 +277,9 @@ export const configureKeyboardInteraction = (
       case 'ArrowRight':
       case ' ':
       case 'Enter':
-        const activeItem = document.activeElement as HTMLElement | null;
-        if (activeItem && isTriggerElement(activeItem)) {
+        if (activeElement && isTriggerElement(activeElement)) {
           const rightEvent = new CustomEvent('ionPopoverActivateTrigger');
-          activeItem.dispatchEvent(rightEvent);
+          activeElement.dispatchEvent(rightEvent);
         }
         break;
       default:
@@ -322,7 +322,6 @@ export const getPopoverPosition = (
   switch (reference) {
     case 'event':
       if (!event) {
-        console.error('No event provided');
         return defaultPosition;
       }
 
@@ -346,7 +345,6 @@ export const getPopoverPosition = (
     default:
       const actualTriggerEl = (triggerEl || event?.target) as HTMLElement | null;
       if (!actualTriggerEl) {
-        console.error('No trigger element found');
         return defaultPosition;
       }
       const triggerBoundingBox = actualTriggerEl.getBoundingClientRect();
