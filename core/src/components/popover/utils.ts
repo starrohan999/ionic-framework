@@ -182,7 +182,7 @@ export const configureTriggerInteraction = (
  * Returns the index of an ion-item in an array of ion-items.
  */
 const getIndexOfItem = (items: HTMLIonItemElement[], item: HTMLElement | null) => {
-  if (!item || item.tagName !== 'ION-ITEM') return -1;
+  if (!item || item.tagName !== 'ION-ITEM') { return -1; }
 
   return items.findIndex(el => el === item)
 };
@@ -256,7 +256,8 @@ export const configureKeyboardInteraction = (
        */
       case 'ArrowDown':
         const nextItem = getNextItem(items, activeElement);
-        if (nextItem) {
+        // tslint:disable-next-line:strict-type-predicates
+        if (nextItem !== undefined) {
           nextItem.focus();
         }
         break;
@@ -265,7 +266,8 @@ export const configureKeyboardInteraction = (
        */
       case 'ArrowUp':
         const prevItem = getPrevItem(items, activeElement);
-        if (prevItem) {
+        // tslint:disable-next-line:strict-type-predicates
+        if (prevItem !== undefined) {
           prevItem.focus();
         }
         break;

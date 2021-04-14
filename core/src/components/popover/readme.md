@@ -34,6 +34,72 @@ Any of the defined [CSS Custom Properties](#css-custom-properties) can be used t
 
 > If you are building an Ionic Angular app, the styles need to be added to a global stylesheet file. Read [Style Placement](#style-placement) in the Angular section below for more information.
 
+## Triggers
+
+A trigger for an `ion-popover` is the element that will open a popover when interacted with. The interaction behavior can be customized by setting the `trigger-action` property. The following example shows how to create a right click menu using `trigger` and `trigger-action`:
+
+```html
+<ion-button id="trigger-button">Right click me!</ion-button>
+<ion-popover
+  trigger="trigger-button"
+  trigger-action="context-menu"
+>
+  <ion-content>
+    <ion-list>
+      ...
+    </ion-list>
+  </ion-content>
+</ion-popover>
+```
+
+## Positioning
+
+### Reference
+
+When presenting a popover, Ionic Framework needs a reference point to present the popover relative to. With `reference="event"`, the popover will be presented relative to the x-y coordinates of the pointer event that was dispatched on your trigger element. With `reference="trigger"`, the popover will be presented relative to the bounding box of your trigger element.
+
+### Side
+
+Regardless of what you choose for your reference point, you can position a popover to the `top`, `right`, `left`, or `bottom` of your reference point by using the `side` property. You can also use the `start` or `end` values if you would like the side to switch based on LTR or RTL modes.
+
+### Alignment
+
+The `alignment` property allows you to line up an edge of your popover with a corresponding edge on your trigger element.
+
+### Offsets
+
+If you need finer grained control over the positioning of your popover you can use the `--offset-x` and `--offset-y` CSS Variables.
+
+## Sizing
+
+When making dropdown menus, you may want to have the width of the popover match the width of the trigger element. Doing this without knowing the trigger width ahead of time is tricky. You can set the `size` property to `'cover'` and Ionic Framework will ensure that the width of the popover matches the width of your trigger element.
+
+## Nested Popovers
+
+When using `ion-popover` inline, you can nested them to create nested dropdown menus. When doing this, only the backdrop on the parent popover will appear so that the screen does not get progressively darker as you open more popovers. See the [Usage](./#usage) section for an example on how to write a nested popover.
+
+## Accessibility
+
+### Keyboard Navigation
+
+`ion-popover` has basic keyboard support for navigating between focusable elements inside of the popover. The following table details what each key does:
+
+| Key                | Function                                                     |
+| ------------------ | ------------------------------------------------------------ |
+| `Tab`              | Moves focus to the next focusable element.                   |
+| `Shift` + `Tab`    | Moves focus to the previous focusable element.               |
+| `Esc`              | Closes the popover. |
+| `Space` or `Enter` | Clicks the focusable element. |
+
+
+`ion-popover` has full arrow key support for navigating between `ion-item` elements with the `button` property. The most common use case for this is as a dropdown menu in a desktop-focused application. In addition to the basic keyboard support, the following table details arrow key support for dropdown menus:
+
+| ------------------ | -------------------------------------------------------------- |
+| `ArrowUp`          | Moves focus to the previous focusable element.                 |
+| `ArrowDown`        | Moves focus to the next focusable element.                     |
+| `ArrowLeft`        | When used in a child popover, closes the popover and returns focus to the parent popover. |
+| `Space`, `Enter`, and `ArrowRight`       | When focusing a trigger element, opens the associated popover. |
+
 
 <!-- Auto Generated Below -->
 
@@ -367,7 +433,6 @@ export default defineComponent({
 | `backdropDismiss` | `backdrop-dismiss`  | If `true`, the popover will be dismissed when the backdrop is clicked.                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `boolean`                                                    | `true`      |
 | `dismissOnSelect` | `dismiss-on-select` | If `true`, the popover will be automatically dismissed when the content has been clicked.                                                                                                                                                                                                                                                                                                                                                                                                                                    | `boolean`                                                    | `false`     |
 | `enterAnimation`  | --                  | Animation to use when the popover is presented.                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `((baseEl: any, opts?: any) => Animation) \| undefined`      | `undefined` |
-| `event`           | `event`             | The event to pass to the popover animation.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `any`                                                        | `undefined` |
 | `keyboardClose`   | `keyboard-close`    | If `true`, the keyboard will be automatically dismissed when the overlay is presented.                                                                                                                                                                                                                                                                                                                                                                                                                                       | `boolean`                                                    | `true`      |
 | `leaveAnimation`  | --                  | Animation to use when the popover is dismissed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `((baseEl: any, opts?: any) => Animation) \| undefined`      | `undefined` |
 | `mode`            | `mode`              | The mode determines which platform styles to use.                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `"ios" \| "md"`                                              | `undefined` |

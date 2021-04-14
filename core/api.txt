@@ -829,7 +829,6 @@ ion-popover,prop,animated,boolean,true,false,false
 ion-popover,prop,backdropDismiss,boolean,true,false,false
 ion-popover,prop,dismissOnSelect,boolean,false,false,false
 ion-popover,prop,enterAnimation,((baseEl: any, opts?: any) => Animation) | undefined,undefined,false,false
-ion-popover,prop,event,any,undefined,false,false
 ion-popover,prop,keyboardClose,boolean,true,false,false
 ion-popover,prop,leaveAnimation,((baseEl: any, opts?: any) => Animation) | undefined,undefined,false,false
 ion-popover,prop,mode,"ios" | "md",undefined,false,false

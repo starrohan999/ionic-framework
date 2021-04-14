@@ -113,6 +113,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
   /**
    * The event to pass to the popover animation.
+   * @internal
    */
   @Prop() event: any;
 
