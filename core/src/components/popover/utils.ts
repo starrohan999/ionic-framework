@@ -1,7 +1,7 @@
 import { PopoverSize, PositionAlign, PositionReference, PositionSide, TriggerAction } from '../../interface';
 import { raf } from '../../utils/helpers';
 
-interface TriggerCallback {
+interface InteractionCallback {
   eventName: string;
   callback: (ev: any) => void;
 }
@@ -54,6 +54,41 @@ export const getPopoverDimensions = (
   }
 }
 
+export const configureDismissInteraction = (
+  triggerAction: TriggerAction,
+  popoverEl: HTMLIonPopoverElement,
+  parentPopoverEl: HTMLIonPopoverElement
+) => {
+  let dismissCallbacks: InteractionCallback[] = [];
+  const parentContentEl = parentPopoverEl.querySelector('.popover-content') as HTMLElement;
+
+  switch (triggerAction) {
+    case 'hover':
+      dismissCallbacks = [
+        {
+          eventName: 'mouseenter',
+          callback: () => popoverEl.dismiss(undefined, undefined, false)
+        }
+     ];
+      break;
+    case 'context-menu':
+    case 'click':
+    default:
+      dismissCallbacks = [
+        {
+          eventName: 'click',
+          callback: () => popoverEl.dismiss(undefined, undefined, false)
+        }
+      ];
+      break;
+  }
+  dismissCallbacks.forEach(({ eventName, callback }) => parentContentEl.addEventListener(eventName, callback));
+
+  return () => {
+    dismissCallbacks.forEach(({ eventName, callback }) => parentContentEl.removeEventListener(eventName, callback));
+  }
+}
+
 /**
  * Configures the triggerEl to respond
  * to user interaction based upon the triggerAction
@@ -64,7 +99,7 @@ export const configureTriggerInteraction = (
   triggerAction: TriggerAction,
   popoverEl: HTMLIonPopoverElement
 ) => {
-  let triggerCallbacks: TriggerCallback[] = [];
+  let triggerCallbacks: InteractionCallback[] = [];
 
   /**
    * Based upon the kind of trigger interaction
@@ -127,6 +162,7 @@ export const configureTriggerInteraction = (
           callback: (ev: Event) => popoverEl.present(ev, true)
         }
       ]
+
       break;
     case 'context-menu':
       triggerCallbacks = [
@@ -150,6 +186,7 @@ export const configureTriggerInteraction = (
           callback: (ev: Event) => popoverEl.present(ev, true)
         }
       ]
+
       break;
     case 'click':
     default:

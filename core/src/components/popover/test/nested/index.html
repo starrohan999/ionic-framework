@@ -47,13 +47,13 @@
           </ion-button>
           <ion-popover
             animated="false"
-            dismiss-on-select="true"
             show-backdrop="false"
             trigger="first-trigger"
             side="right"
           >
             <ion-content>
               <ion-list lines="none">
+                <ion-list-header>Popover 1</ion-list-header>
                 <ion-item button>
                   <ion-label>Open</ion-label>
                 </ion-item>
@@ -64,10 +64,11 @@
                 <ion-popover
                   animated="false"
                   trigger="open-with-popover"
-                  trigger-action="hover"
                   side="right"
                 >
+
                   <ion-list lines="none">
+                    <ion-list-header>Popover 2</ion-list-header>
                     <ion-item button>
                       <ion-label>Preview (default)</ion-label>
                     </ion-item>
@@ -119,7 +120,6 @@
                 <ion-popover
                   animated="false"
                   trigger="share-popover"
-                  trigger-action="hover"
                   side="right"
                 >
                   <ion-list lines="none">

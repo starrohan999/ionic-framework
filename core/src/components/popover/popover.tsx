@@ -12,7 +12,7 @@ import { iosEnterAnimation } from './animations/ios.enter';
 import { iosLeaveAnimation } from './animations/ios.leave';
 import { mdEnterAnimation } from './animations/md.enter';
 import { mdLeaveAnimation } from './animations/md.leave';
-import { configureKeyboardInteraction, configureTriggerInteraction } from './utils';
+import { configureDismissInteraction, configureKeyboardInteraction, configureTriggerInteraction } from './utils';
 
 const CoreDelegate = () => {
   let Cmp: any;
@@ -56,6 +56,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
   private popoverId = `ion-popover-${popoverIds++}`;
   private destroyTriggerInteraction?: () => void;
   private destroyKeyboardInteraction?: () => void;
+  private destroyDismissInteraction?: () => void;
   private coreDelegate: FrameworkDelegate = CoreDelegate();
 
   presented = false;
@@ -260,6 +261,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
     await deepReady(this.usersElement);
 
     this.configureKeyboardInteraction();
+    this.configureDismissInteraction();
 
     return present(this, 'popoverEnter', iosEnterAnimation, mdEnterAnimation, {
       event: this.event || event,
@@ -282,12 +284,21 @@ export class Popover implements ComponentInterface, OverlayInterface {
    */
   @Method()
   async dismiss(data?: any, role?: string, dismissParentPopover = true): Promise<boolean> {
+    const { destroyKeyboardInteraction, destroyDismissInteraction } = this;
     if (dismissParentPopover && this.parentPopover) {
       this.parentPopover.dismiss(data, role, dismissParentPopover)
     }
 
     const shouldDismiss = await dismiss(this, data, role, 'popoverLeave', iosLeaveAnimation, mdLeaveAnimation, this.event);
     if (shouldDismiss) {
+      if (destroyKeyboardInteraction) {
+        destroyKeyboardInteraction();
+        this.destroyKeyboardInteraction = undefined;
+      }
+      if (destroyDismissInteraction) {
+        destroyDismissInteraction();
+        this.destroyDismissInteraction = undefined;
+      }
       await detachComponent(this.delegate, this.usersElement);
     }
     return shouldDismiss;
@@ -361,6 +372,18 @@ export class Popover implements ComponentInterface, OverlayInterface {
     }
 
     this.destroyKeyboardInteraction = configureKeyboardInteraction(el);
+  }
+
+  private configureDismissInteraction = () => {
+    const { destroyDismissInteraction, parentPopover, triggerAction, el } = this;
+
+    if (!parentPopover) { return; }
+
+    if (destroyDismissInteraction) {
+      destroyDismissInteraction();
+    }
+
+    this.destroyDismissInteraction = configureDismissInteraction(triggerAction, el, parentPopover);
   }
 
   render() {
