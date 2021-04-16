@@ -37,6 +37,14 @@ const CoreDelegate = () => {
   return { attachViewToDom, removeViewFromDom }
 }
 
+// TODO
+// 1. Remove additional styles
+// 2. Clean up CoreDelegate
+// 3. Fix issue where popovers not being dismissed when trigger-action is click & you click on a trigger to open another popover.
+// 4. Finish docs
+// 5. Test in framework integrations
+// 6. Should be able to set id and class directly on popover instead of using css-class when writing inline.
+
 /**
  * @virtualProp {"ios" | "md"} mode - The mode determines which platform styles to use.
  */

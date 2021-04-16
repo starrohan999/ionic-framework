@@ -50,22 +50,19 @@ export const createOverlay = <T extends HTMLIonOverlayElement>(tagName: string, 
       const element = document.createElement(tagName) as HTMLIonOverlayElement;
       element.classList.add('overlay-hidden');
 
-      // convert the passed in overlay options into props
-      // that get passed down into the new overlay
+      /**
+       * Convert the passed in overlay options into props
+       * that get passed down into the new overlay.
+       * Inline is needed for ion-popover as it can
+       * be presented via a controller or written
+       * inline in a template.
+       */
       Object.assign(element, { ...opts, inline: false });
 
       // append the overlay element to the document body
       getAppRoot(document).appendChild(element);
 
-      return new Promise(resolve => componentOnReady(element, () => {
-        if (element.tagName === 'ION-POPOVER') {
-          (element as any).inline = false;
-        }
-
-        console.log('opts', opts, element, (element as any).inline)
-
-        resolve(element as any);
-      }));
+      return new Promise(resolve => componentOnReady(element, resolve));
     });
   }
   return Promise.resolve() as any;
@@ -281,7 +278,7 @@ export const present = async (
   }
 
   if (overlay.keyboardClose) {
-    if (opts.focusFirstDescendant) {
+    if (opts && opts.focusFirstDescendant) {
       focusFirstDescendant(overlay.el, overlay.el as HTMLIonOverlayElement)
     } else {
       overlay.el.focus();
