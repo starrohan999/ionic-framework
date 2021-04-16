@@ -31,6 +31,17 @@
     margin-top: 10px;
     margin-left: 5px;
   }
+
+  ion-popover {
+    --width: 75px !important;
+  }
+
+  @media screen and (max-width: 400px) {
+    .grid {
+      grid-template-columns: 1fr;
+      padding: 0px;
+    }
+  }
   </style>
 <body>
   <ion-app>
@@ -46,6 +57,7 @@
           <h2>Top, Start</h2>
           <ion-button id="top-start">Click to Open</ion-button>
           <ion-popover
+            css-class="top-start-popover"
             trigger="top-start"
             side="top"
             alignment="start"
@@ -59,6 +71,7 @@
           <h2>Top, Center</h2>
           <ion-button id="top-center">Click to Open</ion-button>
           <ion-popover
+            css-class="top-center-popover"
             trigger="top-center"
             side="top"
             alignment="center"
@@ -72,6 +85,7 @@
           <h2>Top, End</h2>
           <ion-button id="top-end">Click to Open</ion-button>
           <ion-popover
+            css-class="top-end-popover"
             trigger="top-end"
             side="top"
             alignment="end"
@@ -85,6 +99,7 @@
           <h2>Right, Start</h2>
           <ion-button id="right-start">Click to Open</ion-button>
           <ion-popover
+            css-class="right-start-popover"
             trigger="right-start"
             side="right"
             alignment="start"
@@ -98,6 +113,7 @@
           <h2>Right, Center</h2>
           <ion-button id="right-center">Click to Open</ion-button>
           <ion-popover
+            css-class="right-center-popover"
             trigger="right-center"
             side="right"
             alignment="center"
@@ -111,6 +127,7 @@
           <h2>Right, End</h2>
           <ion-button id="right-end">Click to Open</ion-button>
           <ion-popover
+            css-class="right-end-popover"
             trigger="right-end"
             side="right"
             alignment="end"
@@ -124,6 +141,7 @@
           <h2>Bottom, Start</h2>
           <ion-button id="bottom-start">Click to Open</ion-button>
           <ion-popover
+            css-class="bottom-start-popover"
             trigger="bottom-start"
             side="bottom"
             alignment="start"
@@ -137,6 +155,7 @@
           <h2>Bottom, Center</h2>
           <ion-button id="bottom-center">Click to Open</ion-button>
           <ion-popover
+            css-class="bottom-center-popover"
             trigger="bottom-center"
             side="bottom"
             alignment="center"
@@ -150,6 +169,7 @@
           <h2>Bottom, End</h2>
           <ion-button id="bottom-end">Click to Open</ion-button>
           <ion-popover
+            css-class="bottom-end-popover"
             trigger="bottom-end"
             side="bottom"
             alignment="end"
@@ -163,6 +183,7 @@
           <h2>Left, Start</h2>
           <ion-button id="left-start">Click to Open</ion-button>
           <ion-popover
+            css-class="left-start-popover"
             trigger="left-start"
             side="left"
             alignment="start"
@@ -176,6 +197,7 @@
           <h2>Left, Center</h2>
           <ion-button id="left-center">Click to Open</ion-button>
           <ion-popover
+            css-class="left-center-popover"
             trigger="left-center"
             side="left"
             alignment="center"
@@ -189,6 +211,7 @@
           <h2>Left, End</h2>
           <ion-button id="left-end">Click to Open</ion-button>
           <ion-popover
+            css-class="left-end-popover"
             trigger="left-end"
             side="left"
             alignment="end"
@@ -202,6 +225,7 @@
           <h2>Start, Start</h2>
           <ion-button id="start-start">Click to Open</ion-button>
           <ion-popover
+            css-class="start-start-popover"
             trigger="start-start"
             side="start"
             alignment="start"
@@ -215,6 +239,7 @@
           <h2>Start, Center</h2>
           <ion-button id="start-center">Click to Open</ion-button>
           <ion-popover
+            css-class="start-center-popover"
             trigger="start-center"
             side="start"
             alignment="center"
@@ -228,6 +253,7 @@
           <h2>Start, End</h2>
           <ion-button id="start-end">Click to Open</ion-button>
           <ion-popover
+            css-class="start-end-popover"
             trigger="start-end"
             side="start"
             alignment="end"
@@ -241,6 +267,7 @@
           <h2>End, Start</h2>
           <ion-button id="end-start">Click to Open</ion-button>
           <ion-popover
+            css-class="end-start-popover"
             trigger="end-start"
             side="end"
             alignment="start"
@@ -254,6 +281,7 @@
           <h2>End, Center</h2>
           <ion-button id="end-center">Click to Open</ion-button>
           <ion-popover
+            css-class="end-center-popover"
             trigger="end-center"
             side="end"
             alignment="center"
@@ -267,6 +295,7 @@
           <h2>End, End</h2>
           <ion-button id="end-end">Click to Open</ion-button>
           <ion-popover
+            css-class="end-end-popover"
             trigger="end-end"
             side="end"
             alignment="end"
@@ -287,7 +316,7 @@
 
       this.innerHTML = `
       <ion-content class="ion-padding">
-        Hello World
+        Hello
       </ion-content>
       `;
     }
