@@ -44,6 +44,7 @@ const CoreDelegate = () => {
 // - Should be able to set id directly on popover when writing inline.
 // - Figure out default styles/animations with brandy
 // - Fix issue where presenting popover as it is dismissing causes errors
+// - Figure out arrow positioning on ios
 
 /**
  * @virtualProp {"ios" | "md"} mode - The mode determines which platform styles to use.
