@@ -1,4 +1,4 @@
-import { Component, ComponentInterface, Element, Event, EventEmitter, Host, Method, Prop, Watch, h } from '@stencil/core';
+import { Component, ComponentInterface, Element, Event, EventEmitter, Host, Method, Prop, State, Watch, h } from '@stencil/core';
 
 import { getIonMode } from '../../global/ionic-global';
 import { AnimationBuilder, ComponentProps, ComponentRef, FrameworkDelegate, OverlayEventDetail, OverlayInterface, PopoverSize, PositionAlign, PositionReference, PositionSide, TriggerAction } from '../../interface';
@@ -16,7 +16,7 @@ import { configureDismissInteraction, configureKeyboardInteraction, configureTri
 
 const CoreDelegate = () => {
   let Cmp: any;
-  const attachViewToDom = (parentElement: HTMLElement, _: any, _2: any = {}, _3?: string[]) => {
+  const attachViewToDom = (parentElement: HTMLElement) => {
     Cmp = parentElement.closest('ion-popover');
     const app = document.querySelector('ion-app') || document.body;
 
@@ -38,12 +38,12 @@ const CoreDelegate = () => {
 }
 
 // TODO
-// 1. Remove additional styles
-// 2. Clean up CoreDelegate
-// 3. Fix issue where popovers not being dismissed when trigger-action is click & you click on a trigger to open another popover.
-// 4. Finish docs
-// 5. Test in framework integrations
-// 6. Should be able to set id and class directly on popover instead of using css-class when writing inline.
+// - Fix issue where popovers not being dismissed when trigger-action is click & you click on a trigger to open another popover.
+// - Finish docs
+// - Test in framework integrations
+// - Should be able to set id directly on popover when writing inline.
+// - Figure out default styles/animations with brandy
+// - Fix issue where presenting popover as it is dismissing causes errors
 
 /**
  * @virtualProp {"ios" | "md"} mode - The mode determines which platform styles to use.
@@ -67,8 +67,9 @@ export class Popover implements ComponentInterface, OverlayInterface {
   private destroyDismissInteraction?: () => void;
   private coreDelegate: FrameworkDelegate = CoreDelegate();
 
-  presented = false;
   lastFocus?: HTMLElement;
+
+  @State() presented = false;
 
   @Element() el!: HTMLIonPopoverElement;
 
@@ -396,7 +397,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
   render() {
     const mode = getIonMode(this);
-    const { onLifecycle, popoverId, parentPopover, dismissOnSelect } = this;
+    const { onLifecycle, popoverId, parentPopover, dismissOnSelect, presented } = this;
 
     return (
       <Host
@@ -411,7 +412,8 @@ export class Popover implements ComponentInterface, OverlayInterface {
           ...getClassMap(this.cssClass),
           [mode]: true,
           'popover-translucent': this.translucent,
-          'overlay-hidden': true
+          'overlay-hidden': true,
+          'popover-interactive': presented
         }}
         onIonPopoverDidPresent={onLifecycle}
         onIonPopoverWillPresent={onLifecycle}
