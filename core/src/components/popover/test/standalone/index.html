@@ -14,138 +14,32 @@
     import { popoverController } from '../../../../dist/ionic/index.esm.js';
     window.popoverController = popoverController;
   </script>
-  <style>
-  ion-popover.liam-popover {
-    //--offset-x: 10px !important;
-  }
-  ion-popover.view-popover {
-    --width: 173px;
-  }
-  ion-item-divider {
-    min-height: 1px;
-  }
-  #liam {
-    margin: 300px;
-  }
-
-  .ios ion-popover .popover-content {
-    border: 0.5px solid rgba(0, 0, 0, 0.2);
-    --box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.12);
-  }
-  </style>
 <body>
-  <ion-button id="liam">Click Me</ion-button>
-  <ion-popover
-    show-backdrop="false"
-    trigger="liam"
-    reference="trigger"
-    side="top"
-    dismiss-on-select="true"
-    css-class="liam-popover"
-  >
-    <ion-content>
-      <ion-list lines="none">
-        <ion-item button detail="false">
-          <ion-label>Cut</ion-label>
-        </ion-item>
-        <ion-item button detail="false">
-          <ion-label>Copy</ion-label>
-        </ion-item>
-        <ion-item button detail="false">
-          <ion-label>Paste</ion-label>
-        </ion-item>
+  <button id="basic-popover" onclick="presentPopover({ component: 'profile-page', event: event })">Show Popover</button>
+  <button onclick="presentPopover({ component: 'translucent-page', event: event, translucent: true })">Show Translucent Popover</button>
+  <button color="secondary" onclick="presentPopover({ component: 'list-page', event: event })">Show Long List Popover</button>
+  <button color="danger" onclick="presentPopover({ component: 'profile-page' })">No Event Popover</button>
 
-        <ion-item-divider></ion-item-divider>
-
-        <ion-item button detail id="view-popover-trigger">
-          <ion-label>View</ion-label>
-        </ion-item>
-
-        <ion-popover
-          css-class="view-popover"
-          trigger="view-popover-trigger"
-          trigger-action="hover"
-          dismiss-on-select="true"
-          side="right"
-        >
-          <ion-list lines="none">
-            <ion-radio-group value="icons">
-              <ion-item>
-                <ion-label>as Icons</ion-label>
-                <ion-radio value="icons" slot="start"></ion-radio>
-              </ion-item>
-
-              <ion-item>
-                <ion-label>as List</ion-label>
-                <ion-radio value="list" slot="start"></ion-radio>
-              </ion-item>
-
-              <ion-item>
-                <ion-label>as Columns</ion-label>
-                <ion-radio value="columns" slot="start"></ion-radio>
-              </ion-item>
-
-              <ion-item>
-                <ion-label>as Gallery</ion-label>
-                <ion-radio value="gallery" slot="start"></ion-radio>
-              </ion-item>
-            </ion-radio-group>
-
-            <ion-item-divider></ion-item-divider>
-
-            <ion-item button detail="true" id="another-popover-trigger">
-              <ion-label>Another Menu</ion-label>
-            </ion-item>
-
-            <ion-popover
-              css-class="another-popover"
-              trigger="another-popover-trigger"
-              trigger-action="hover"
-              dismiss-on-select="true"
-              side="right"
-            >
-              <ion-list lines="none">
-                <ion-item button>
-                  <ion-checkbox slot="start"></ion-checkbox>
-                  <ion-label>Item A</ion-label>
-                </ion-item>
-                <ion-item button>
-                  <ion-checkbox slot="start"></ion-checkbox>
-                  <ion-label>Item B</ion-label>
-                </ion-item>
-                <ion-item button>
-                  <ion-checkbox slot="start"></ion-checkbox>
-                  <ion-label>Item C</ion-label>
-                </ion-item>
-              </ion-list>
-            </ion-popover>
-          </ion-list>
-        </ion-popover>
-
-        <ion-item-divider></ion-item-divider>
-
-        <ion-item button detail="false">
-          <ion-label>Preferences</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-content>
-  </ion-popover>
-
-  <!-- <br />
-
-  <ion-button id="liam2">Hover Over Me</ion-button>
-  <ion-popover trigger="liam2" size="cover" trigger-action="hover">
-    <profile-page></profile-page>
-  </ion-popover>
-
-  <br />
-
-  <ion-button id="liam3">Right Click Me</ion-button>
-  <ion-popover trigger="liam3" size="cover" trigger-action="context-menu">
-    <profile-page></profile-page>
-  </ion-popover> -->
+  <style>
+    body > button {
+      display: block;
+      clear: both;
+      width: 100%;
+      padding: 12px 8px;
+      font-size: 1em;
+      background: #f8f8f8;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+  </style>
 
   <script>
+    async function presentPopover(opts) {
+      const popover = await popoverController.create(opts);
+      await popover.present();
+    }
+
     class ProfilePage extends HTMLElement {
       constructor() {
         super();
@@ -167,6 +61,46 @@
     }
 
     customElements.define('profile-page', ProfilePage);
+
+    class ListPage extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        let items = '';
+        for (var i = 0; i < 30; i++) {
+          items += '<ion-item><ion-label>Item ' + i + '</ion-label></ion-item>';
+        }
+
+        this.innerHTML = `
+          <ion-content>
+            <ion-list>
+              <ion-list-header><ion-label>Ionic</ion-label></ion-list-header>
+              ` + items + `
+            </ion-list>
+          </ion-content>
+        `;
+      }
+    }
+
+    customElements.define('list-page', ListPage);
+
+    class TranslucentPage extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.innerHTML = `
+          <div class="ion-padding">
+            <h1>Translucent Popover</h1>
+          </div>
+        `;
+      }
+    }
+
+    customElements.define('translucent-page', TranslucentPage);
   </script>
 </body>
 </html>
