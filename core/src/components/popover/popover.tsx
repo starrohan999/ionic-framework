@@ -198,10 +198,28 @@ export class Popover implements ComponentInterface, OverlayInterface {
    */
   @Prop() alignment: PositionAlign = 'start';
 
+  /**
+   * If `true`, the popover will open. If `false`, the popover will close.
+   * Use this if you need finer grained control over presentation, otherwise
+   * just use the popoverController or the `trigger` property.
+   * Note: `isOpen` will not automatically be set back to `false` when
+   * the popover dismisses. You will need to do that in your code.
+   */
+  @Prop() isOpen = false;
+
   @Watch('trigger')
   @Watch('triggerAction')
   onTriggerChange() {
     this.configureTriggerInteraction();
+  }
+
+  @Watch('isOpen')
+  onIsOpenChange(newValue: boolean, oldValue: boolean) {
+    if (newValue === true && oldValue === false) {
+      this.present();
+    } else if (newValue === false && oldValue === true) {
+      this.dismiss();
+    }
   }
 
   /**

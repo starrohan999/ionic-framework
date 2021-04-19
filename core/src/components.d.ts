@@ -1696,6 +1696,10 @@ export namespace Components {
         "getParentPopover": () => Promise<HTMLIonPopoverElement | null>;
         "inline": boolean;
         /**
+          * If `true`, the popover will open. If `false`, the popover will close. Use this if you need finer grained control over presentation, otherwise just use the popoverController or the `trigger` property. Note: `isOpen` will not automatically be set back to `false` when the popover dismisses. You will need to do that in your code.
+         */
+        "isOpen": boolean;
+        /**
           * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
          */
         "keyboardClose": boolean;
@@ -5050,6 +5054,10 @@ declare namespace LocalJSX {
          */
         "event"?: any;
         "inline"?: boolean;
+        /**
+          * If `true`, the popover will open. If `false`, the popover will close. Use this if you need finer grained control over presentation, otherwise just use the popoverController or the `trigger` property. Note: `isOpen` will not automatically be set back to `false` when the popover dismisses. You will need to do that in your code.
+         */
+        "isOpen"?: boolean;
         /**
           * If `true`, the keyboard will be automatically dismissed when the overlay is presented.
          */
