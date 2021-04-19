@@ -110,11 +110,10 @@
 
       <ion-popover
         :is-open="isPopoverOpen"
-        :componentProps="overlayProps"
         :event="popoverEvent"
         @onDidDismiss="setPopoverRef(false)"
       >
-        <PopoverContent></PopoverContent>
+        <PopoverContent title="Custom Title"></PopoverContent>
       </ion-popover>
 
       <ion-toast
@@ -250,32 +249,32 @@ export default defineComponent({
     }
 
     const openActionSheet = async () => {
-      const actionSheet = await actionSheetController.create({ buttons: actionSheetButtons });
+      const actionSheet = await actionSheetController.create({ cssClass: 'ion-action-sheet-el', buttons: actionSheetButtons });
       await actionSheet.present();
     }
 
     const openAlert = async () => {
-      const alert = await alertController.create({ buttons: alertButtons, header: 'Alert!' });
+      const alert = await alertController.create({ cssClass: 'ion-alert-el', buttons: alertButtons, header: 'Alert!' });
       await alert.present();
     }
 
     const openLoading = async () => {
-      const loading = await loadingController.create({ message: "Loading", duration: 2000, backdropDismiss: true });
+      const loading = await loadingController.create({ cssClass: 'ion-loading-el', message: "Loading", duration: 2000, backdropDismiss: true });
       await loading.present();
     }
 
     const openToast = async () => {
-      const toast = await toastController.create({ header: "Toast!", buttons: toastButtons });
+      const toast = await toastController.create({ cssClass: 'ion-toast-el', header: "Toast!", buttons: toastButtons });
       await toast.present();
     }
 
     const openModal = async () => {
-      const modal = await modalController.create({ component: ModalContent, componentProps: overlayProps });
+      const modal = await modalController.create({ cssClass: 'ion-modal-el', component: ModalContent, componentProps: overlayProps });
       await modal.present();
     }
 
     const openPopover = async (event: Event) => {
-      const popover = await popoverController.create({ component: PopoverContent, event, componentProps: overlayProps });
+      const popover = await popoverController.create({ cssClass: 'ion-popover-el', component: PopoverContent, event, componentProps: overlayProps });
       await popover.present();
     }
 
@@ -345,7 +344,6 @@ export default defineComponent({
     const onModalDidPresent = () => { didPresent.value += 1; setModalRef(true); }
     const onModalWillDismiss = () => willDismiss.value += 1;
     const onModalDidDismiss = () => { didDismiss.value += 1; setModalRef(false); }
-
     return {
       onModalWillPresent,
       onModalDidPresent,
