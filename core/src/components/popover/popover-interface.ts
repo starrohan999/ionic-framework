@@ -23,6 +23,9 @@ export interface PopoverOptions<T extends ComponentRef = ComponentRef> {
   reference?: PositionReference;
   side?: PositionSide;
   align?: PositionAlign;
+
+  trigger?: string;
+  triggerAction?: string;
 }
 
 export type PopoverSize = 'cover' | 'auto';

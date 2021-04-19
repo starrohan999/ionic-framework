@@ -148,6 +148,10 @@ export const IonProgressBar = /*@__PURE__*/ createReactComponent<
   JSX.IonProgressBar,
   HTMLIonProgressBarElement
 >('ion-progress-bar');
+export const IonPopover = /*@__PURE__*/ createReactComponent<
+JSX.IonPopover,
+HTMLIonPopoverElement
+>('ion-popover');
 export const IonRadio = /*@__PURE__*/ createReactComponent<JSX.IonRadio, HTMLIonRadioElement>(
   'ion-radio'
 );

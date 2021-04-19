@@ -58,6 +58,9 @@ const Main: React.FC<MainProps> = () => {
           <IonItem routerLink="/Refs">
             <IonLabel>Refs</IonLabel>
           </IonItem>
+          <IonItem routerLink="/overlays">
+            <IonLabel>Overlays</IonLabel>
+          </IonItem>
         </IonList>
       </IonContent>
     </IonPage>

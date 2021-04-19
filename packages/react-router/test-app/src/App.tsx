@@ -34,7 +34,8 @@ import { OutletRef } from './pages/outlet-ref/OutletRef';
 import { SwipeToGoBack } from './pages/swipe-to-go-back/SwipToGoBack';
 import Refs from './pages/refs/Refs';
 import DynamicIonpageClassnames from './pages/dynamic-ionpage-classnames/DynamicIonpageClassnames';
-debugger;
+import Overlays from './pages/overlays/Overlays';
+
 const App: React.FC = () => {
   return (
     <IonApp>
@@ -52,6 +53,7 @@ const App: React.FC = () => {
         <Route path="/swipe-to-go-back" component={SwipeToGoBack} />
         <Route path="/dynamic-ionpage-classnames" component={DynamicIonpageClassnames} />
         <Route path="/refs" component={Refs} />
+        <Route path="/overlays" component={Overlays} />
       </IonReactRouter>
     </IonApp>
   );
