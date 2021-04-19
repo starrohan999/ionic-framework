@@ -41,7 +41,6 @@ const CoreDelegate = () => {
 // - Fix issue where popovers not being dismissed when trigger-action is click & you click on a trigger to open another popover.
 // - Finish docs
 // - Test in framework integrations
-// - Should be able to set id directly on popover when writing inline.
 // - Figure out default styles/animations with brandy
 // - Figure out arrow positioning on ios
 
@@ -61,7 +60,10 @@ export class Popover implements ComponentInterface, OverlayInterface {
   private usersElement?: HTMLElement;
   private triggerEl?: HTMLElement | null;
   private parentPopover: HTMLIonPopoverElement | null = null;
-  private popoverId = `ion-popover-${popoverIds++}`;
+
+  private popoverIndex = popoverIds++;
+  private popoverId?: string;
+
   private destroyTriggerInteraction?: () => void;
   private destroyKeyboardInteraction?: () => void;
   private destroyDismissInteraction?: () => void;
@@ -244,6 +246,14 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
   connectedCallback() {
     prepareOverlay(this.el);
+  }
+
+  componentWillLoad() {
+    /**
+     * If user has custom ID set then we should
+     * not assign the default incrementing ID.
+     */
+    this.popoverId = (this.el.hasAttribute('id')) ? this.el.getAttribute('id')! : `ion-popover-${this.popoverIndex}`;
   }
 
   componentDidLoad() {
