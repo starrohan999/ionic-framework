@@ -43,7 +43,6 @@ const CoreDelegate = () => {
 // - Test in framework integrations
 // - Should be able to set id directly on popover when writing inline.
 // - Figure out default styles/animations with brandy
-// - Fix issue where presenting popover as it is dismissing causes errors
 // - Figure out arrow positioning on ios
 
 /**
@@ -67,6 +66,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
   private destroyKeyboardInteraction?: () => void;
   private destroyDismissInteraction?: () => void;
   private coreDelegate: FrameworkDelegate = CoreDelegate();
+  private currentTransition?: Promise<any>;
 
   lastFocus?: HTMLElement;
 
@@ -266,6 +266,19 @@ export class Popover implements ComponentInterface, OverlayInterface {
     if (this.presented) {
       return;
     }
+
+    /**
+     * When using an inline popover
+     * and dismissing a popover it is possible to
+     * quickly present the popover while it is
+     * dismissing. We need to await any current
+     * transition to allow the dismiss to finish
+     * before presenting again.
+     */
+    if (this.currentTransition !== undefined) {
+      await this.currentTransition;
+    }
+
     const container = this.el.querySelector('.popover-content');
     if (!container) {
       throw new Error('container is undefined');
@@ -287,7 +300,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
     this.configureKeyboardInteraction();
     this.configureDismissInteraction();
 
-    return present(this, 'popoverEnter', iosEnterAnimation, mdEnterAnimation, {
+    this.currentTransition = present(this, 'popoverEnter', iosEnterAnimation, mdEnterAnimation, {
       event: this.event || event,
       size: this.size,
       trigger: this.triggerEl,
@@ -296,6 +309,10 @@ export class Popover implements ComponentInterface, OverlayInterface {
       align: this.alignment,
       focusFirstDescendant: focusFirstItem
     });
+
+    await this.currentTransition;
+
+    this.currentTransition = undefined;
   }
 
   /**
@@ -308,12 +325,26 @@ export class Popover implements ComponentInterface, OverlayInterface {
    */
   @Method()
   async dismiss(data?: any, role?: string, dismissParentPopover = true): Promise<boolean> {
+
+    /**
+     * When using an inline popover
+     * and presenting a popover it is possible to
+     * quickly dismiss the popover while it is
+     * presenting. We need to await any current
+     * transition to allow the present to finish
+     * before dismissing again.
+     */
+    if (this.currentTransition !== undefined) {
+      await this.currentTransition;
+    }
+
     const { destroyKeyboardInteraction, destroyDismissInteraction } = this;
     if (dismissParentPopover && this.parentPopover) {
       this.parentPopover.dismiss(data, role, dismissParentPopover)
     }
 
-    const shouldDismiss = await dismiss(this, data, role, 'popoverLeave', iosLeaveAnimation, mdLeaveAnimation, this.event);
+    this.currentTransition = dismiss(this, data, role, 'popoverLeave', iosLeaveAnimation, mdLeaveAnimation, this.event);
+    const shouldDismiss = await this.currentTransition;
     if (shouldDismiss) {
       if (destroyKeyboardInteraction) {
         destroyKeyboardInteraction();
@@ -325,6 +356,9 @@ export class Popover implements ComponentInterface, OverlayInterface {
       }
       await detachComponent(this.delegate, this.usersElement);
     }
+
+    this.currentTransition = undefined;
+
     return shouldDismiss;
   }
 
