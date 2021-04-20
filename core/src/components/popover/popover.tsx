@@ -39,7 +39,6 @@ const CoreDelegate = () => {
 }
 
 // TODO
-// - Fix issue where popovers not being dismissed when trigger-action is click & you click on a trigger to open another popover.
 // - Finish docs
 // - Test in framework integrations
 // - Figure out arrow positioning on ios

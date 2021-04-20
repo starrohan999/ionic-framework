@@ -76,7 +76,6 @@ export const configureDismissInteraction = (
            */
           eventName: 'mouseenter',
           callback: (ev: MouseEvent) => {
-
             /**
              * Do not dismiss the popover is we
              * are hovering over its trigger.
@@ -99,13 +98,22 @@ export const configureDismissInteraction = (
       dismissCallbacks = [
         {
           eventName: 'click',
-          callback: () => popoverEl.dismiss(undefined, undefined, false)
+          callback: (ev: MouseEvent) => {
+            /**
+             * Do not dismiss the popover is we
+             * are hovering over its trigger.
+             */
+            const target = ev.target as HTMLElement;
+            const closestTrigger = target.closest('[data-ion-popover-trigger]');
+            if (closestTrigger === triggerEl) { return; }
+
+            popoverEl.dismiss(undefined, undefined, false);
+          }
         }
       ];
       break;
   }
 
-  console.log(parentContentEl);
   dismissCallbacks.forEach(({ eventName, callback }) => parentContentEl.addEventListener(eventName, callback));
 
   return () => {
@@ -128,10 +136,7 @@ export const configureTriggerInteraction = (
   /**
    * Based upon the kind of trigger interaction
    * the user wants, we setup the correct event
-   * listeners. We always need to add a click
-   * event with stopPropagation so that
-   * clicking a trigger element does not
-   * dismiss popovers with `dismiss-on-select="true"`.
+   * listeners.
    */
   switch (triggerAction) {
     case 'hover':
@@ -175,12 +180,15 @@ export const configureTriggerInteraction = (
             if (!target) { return; }
 
             if (target.closest('ion-popover') !== popoverEl) {
-              console.log('dismisisn')
               popoverEl.dismiss(undefined, undefined, false);
             }
           }
         },
         {
+          /**
+           * stopPropagation here prevents the popover
+           * from dismissing when dismiss-on-select="true".
+           */
           eventName: 'click',
           callback: (ev: Event) => ev.stopPropagation()
         },
@@ -219,11 +227,15 @@ export const configureTriggerInteraction = (
     default:
       triggerCallbacks = [
         {
+          /**
+           * Do not do a stopPropagation() here
+           * because if you had two click triggers
+           * then clicking the first trigger and then
+           * clicking the second trigger would not cause
+           * the first popover to dismiss.
+           */
           eventName: 'click',
-          callback: (ev: Event) => {
-            ev.stopPropagation();
-            popoverEl.present(ev);
-          }
+          callback: (ev: Event) => popoverEl.present(ev)
         },
         {
           eventName: 'ionPopoverActivateTrigger',
