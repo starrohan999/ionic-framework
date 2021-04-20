@@ -491,7 +491,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
             class="popover-content"
             onClick={dismissOnSelect ? () => this.dismiss() : undefined}
           >
-            {presented && <slot></slot>}
+            <slot></slot>
           </div>
         </div>
 
