@@ -42,7 +42,6 @@ const CoreDelegate = () => {
 // - Fix issue where popovers not being dismissed when trigger-action is click & you click on a trigger to open another popover.
 // - Finish docs
 // - Test in framework integrations
-// - Figure out default styles/animations with brandy
 // - Figure out arrow positioning on ios
 
 /**
@@ -457,7 +456,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
   render() {
     const mode = getIonMode(this);
-    const { onLifecycle, popoverId, parentPopover, dismissOnSelect, presented } = this;
+    const { onLifecycle, popoverId, parentPopover, dismissOnSelect, presented, side } = this;
 
     return (
       <Host
@@ -474,7 +473,9 @@ export class Popover implements ComponentInterface, OverlayInterface {
           'popover-translucent': this.translucent,
           'overlay-hidden': true,
           'popover-interactive': presented,
-          'popover-desktop': isPlatform('desktop')
+          'popover-desktop': isPlatform('desktop'),
+          [`popover-side-${side}`]: true,
+          'popover-nested': !!parentPopover
         }}
         onIonPopoverDidPresent={onLifecycle}
         onIonPopoverWillPresent={onLifecycle}

@@ -88,3 +88,29 @@
   --ion-safe-area-bottom: 0px;
   --ion-safe-area-left: 0px;
 }
+
+// Nested Popovers
+// --------------------------------------------------
+:host(.popover-nested.popover-side-left) {
+  --offset-x: 5px;
+}
+
+:host(.popover-nested.popover-side-right) {
+  --offset-x: -5px;
+}
+
+:host(.popover-nested.popover-side-start) {
+  --offset-x: 5px;
+
+  @include rtl() {
+    --offset-x: -5px;
+  }
+}
+
+:host(.popover-nested.popover-side-end) {
+  --offset-x: -5px;
+
+  @include rtl() {
+    --offset-x: 5px;
+  }
+}
