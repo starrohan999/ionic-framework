@@ -55,6 +55,7 @@ export const getPopoverDimensions = (
 }
 
 export const configureDismissInteraction = (
+  triggerEl: HTMLElement,
   triggerAction: TriggerAction,
   popoverEl: HTMLIonPopoverElement,
   parentPopoverEl: HTMLIonPopoverElement
@@ -66,8 +67,29 @@ export const configureDismissInteraction = (
     case 'hover':
       dismissCallbacks = [
         {
+          /**
+           * Do not use mouseover here
+           * as this will causes the event to
+           * be dispatched on each underlying
+           * element rather than on the popover
+           * content as a whole.
+           */
           eventName: 'mouseenter',
-          callback: () => popoverEl.dismiss(undefined, undefined, false)
+          callback: (ev: MouseEvent) => {
+
+            /**
+             * Do not dismiss the popover is we
+             * are hovering over its trigger.
+             * This would be easier if we used mouseover
+             * but this would cause the event to be dispatched
+             * more often than we would like, potentially
+             * causing performance issues.
+             */
+            const element = document.elementFromPoint(ev.clientX, ev.clientY) as HTMLElement | null;
+            if (element === triggerEl) { return; }
+
+            popoverEl.dismiss(undefined, undefined, false);
+          }
         }
      ];
       break;
@@ -82,6 +104,8 @@ export const configureDismissInteraction = (
       ];
       break;
   }
+
+  console.log(parentContentEl);
   dismissCallbacks.forEach(({ eventName, callback }) => parentContentEl.addEventListener(eventName, callback));
 
   return () => {
@@ -116,7 +140,9 @@ export const configureTriggerInteraction = (
       triggerCallbacks = [
         {
           eventName: 'mouseenter',
-          callback: (ev: Event) => {
+          callback: async (ev: Event) => {
+            ev.stopPropagation();
+
             if (hoverTimeout) {
               clearTimeout(hoverTimeout);
             }
@@ -149,6 +175,7 @@ export const configureTriggerInteraction = (
             if (!target) { return; }
 
             if (target.closest('ion-popover') !== popoverEl) {
+              console.log('dismisisn')
               popoverEl.dismiss(undefined, undefined, false);
             }
           }

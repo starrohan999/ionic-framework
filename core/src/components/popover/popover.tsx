@@ -5,6 +5,7 @@ import { AnimationBuilder, ComponentProps, ComponentRef, FrameworkDelegate, Over
 import { attachComponent, detachComponent } from '../../utils/framework-delegate';
 import { addEventListener } from '../../utils/helpers';
 import { BACKDROP, dismiss, eventMethod, prepareOverlay, present } from '../../utils/overlays';
+import { isPlatform } from '../../utils/platform';
 import { getClassMap } from '../../utils/theme';
 import { deepReady } from '../../utils/transition';
 
@@ -13,7 +14,6 @@ import { iosLeaveAnimation } from './animations/ios.leave';
 import { mdEnterAnimation } from './animations/md.enter';
 import { mdLeaveAnimation } from './animations/md.leave';
 import { configureDismissInteraction, configureKeyboardInteraction, configureTriggerInteraction } from './utils';
-import { isPlatform } from '../../utils/platform';
 
 const CoreDelegate = () => {
   let Cmp: any;
@@ -443,15 +443,15 @@ export class Popover implements ComponentInterface, OverlayInterface {
   }
 
   private configureDismissInteraction = () => {
-    const { destroyDismissInteraction, parentPopover, triggerAction, el } = this;
+    const { destroyDismissInteraction, parentPopover, triggerAction, triggerEl, el } = this;
 
-    if (!parentPopover) { return; }
+    if (!parentPopover || !triggerEl) { return; }
 
     if (destroyDismissInteraction) {
       destroyDismissInteraction();
     }
 
-    this.destroyDismissInteraction = configureDismissInteraction(triggerAction, el, parentPopover);
+    this.destroyDismissInteraction = configureDismissInteraction(triggerEl, triggerAction, el, parentPopover);
   }
 
   render() {
