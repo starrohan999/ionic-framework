@@ -63,6 +63,35 @@
   top: -6px;
 }
 
+:host(.popover-side-left) .popover-arrow {
+  transform: rotate(90deg);
+}
+
+:host(.popover-side-right) .popover-arrow {
+  transform: rotate(-90deg);
+}
+
+:host(.popover-side-top) .popover-arrow {
+  transform: rotate(180deg);
+}
+
+:host(.popover-side-start) .popover-arrow {
+  transform: rotate(90deg);
+
+  @include rtl() {
+    transform: rotate(-90deg);
+  }
+}
+
+:host(.popover-side-end) .popover-arrow {
+  transform: rotate(-90deg);
+
+  @include rtl() {
+    transform: rotate(90deg);
+  }
+}
+
+
 // Translucent Popover
 // -----------------------------------------
 

@@ -210,9 +210,8 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
   /**
    * If `true`, the popover will display an arrow
-   * that points at the `reference` when running in `ios` mode.
-   * Does not apply in `md` mode. When nesting popovers,
-   * the arrow is only displayed on the initial popover.
+   * that points at the `reference` when running in `ios` mode
+   * on mobile. Does not apply in `md` mode or on desktop.
    */
   @Prop() arrow = true;
 
@@ -466,7 +465,8 @@ export class Popover implements ComponentInterface, OverlayInterface {
   render() {
     const mode = getIonMode(this);
     const { onLifecycle, popoverId, parentPopover, dismissOnSelect, presented, side, arrow } = this;
-    const enableArrow = arrow && !parentPopover;
+    const desktop = isPlatform('desktop');
+    const enableArrow = arrow && !parentPopover && !desktop;
     return (
       <Host
         aria-modal="true"
@@ -482,7 +482,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
           'popover-translucent': this.translucent,
           'overlay-hidden': true,
           'popover-interactive': presented,
-          'popover-desktop': isPlatform('desktop'),
+          'popover-desktop': desktop,
           [`popover-side-${side}`]: true,
           'popover-nested': !!parentPopover
         }}

@@ -479,6 +479,7 @@ export const IonPopover = /*@__PURE__*/ defineContainer<JSX.IonPopover>('ion-pop
   'side',
   'alignment',
   'isOpen',
+  'arrow',
   'ionPopoverDidPresent',
   'ionPopoverWillPresent',
   'ionPopoverWillDismiss',

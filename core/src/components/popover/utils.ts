@@ -17,6 +17,8 @@ interface PopoverPosition {
   top: number;
   left: number;
   referenceCoordinates?: ReferenceCoordinates;
+  arrowTop?: number;
+  arrowLeft?: number;
 }
 
 export interface PopoverStyles {
@@ -27,6 +29,22 @@ export interface PopoverStyles {
   originY: string;
   checkSafeAreaLeft: boolean;
   checkSafeAreaRight: boolean;
+  arrowTop: number;
+  arrowLeft: number;
+}
+
+/**
+ * Returns the dimensions of the popover
+ * arrow on `ios` mode. If arrow is disabled
+ * returns (0, 0).
+ */
+export const getArrowDimensions = (
+  arrowEl: HTMLElement | null
+) => {
+  if (!arrowEl) return { arrowWidth: 0, arrowHeight: 0 };
+  const { width, height } = arrowEl.getBoundingClientRect();
+
+  return { arrowWidth: width, arrowHeight: height };
 }
 
 /**
@@ -385,15 +403,17 @@ export const configureKeyboardInteraction = (
  */
 export const getPopoverPosition = (
   isRTL: boolean,
-  contentEl: HTMLElement,
+  contentWidth: number,
+  contentHeight: number,
+  arrowWidth: number,
+  arrowHeight: number,
   reference: PositionReference,
   side: PositionSide,
   align: PositionAlign,
   defaultPosition: PopoverPosition,
   triggerEl?: HTMLElement,
-  event?: MouseEvent
+  event?: MouseEvent,
 ): PopoverPosition => {
-  const contentBoundingBox = contentEl.getBoundingClientRect();
   let referenceCoordinates = {
     top: 0,
     left: 0,
@@ -450,19 +470,47 @@ export const getPopoverPosition = (
    * popover to be positioned on the
    * preferred side of the reference.
    */
-  const coordinates = calculatePopoverSide(side, referenceCoordinates, contentBoundingBox, isRTL);
+  const coordinates = calculatePopoverSide(side, referenceCoordinates, contentWidth, contentHeight, arrowWidth, arrowHeight, isRTL);
 
   /**
    * Get the top/left adjustments that
    * would allow the popover content
    * to have the correct alignment.
    */
-  const alignedCoordinates = calculatePopoverAlign(align, side, referenceCoordinates, contentBoundingBox);
+  const alignedCoordinates = calculatePopoverAlign(align, side, referenceCoordinates, contentWidth, contentHeight);
 
   const top = coordinates.top + alignedCoordinates.top;
   const left = coordinates.left + alignedCoordinates.left;
 
-  return { top, left, referenceCoordinates };
+  const { arrowTop, arrowLeft } = calculateArrowPosition(side, arrowWidth, arrowHeight, top, left, contentWidth, contentHeight);
+
+  return { top, left, referenceCoordinates, arrowTop, arrowLeft };
+}
+
+const calculateArrowPosition = (
+  side: PositionSide,
+  arrowWidth: number,
+  arrowHeight: number,
+  top: number,
+  left: number,
+  contentWidth: number,
+  contentHeight: number
+) => {
+  arrowWidth;arrowHeight;
+  top;left;
+  contentWidth;contentHeight;
+  switch (side) {
+    case 'top':
+      return { arrowTop: 0, arrowLeft: 0 }
+    case 'bottom':
+      return { arrowTop:0, arrowLeft: 0 }
+    case 'left':
+      return { arrowTop: 0, arrowLeft: 0  }
+    case 'right':
+      return { arrowTop: 0, arrowLeft: 0 }
+    default:
+      return { arrowTop: 0, arrowLeft: 0 }
+  }
 }
 
 /**
@@ -474,39 +522,42 @@ export const getPopoverPosition = (
 const calculatePopoverSide = (
   side: PositionSide,
   triggerBoundingBox: ReferenceCoordinates,
-  contentBoundingBox: DOMRect,
+  contentWidth: number,
+  contentHeight: number,
+  arrowWidth: number,
+  arrowHeight: number,
   isRTL: boolean
 ) => {
   switch (side) {
     case 'top':
       return {
-        top: triggerBoundingBox.top - contentBoundingBox.height,
+        top: triggerBoundingBox.top - contentHeight - arrowHeight,
         left: triggerBoundingBox.left
       }
     case 'right':
       return {
         top: triggerBoundingBox.top,
-        left: triggerBoundingBox.left + triggerBoundingBox.width
+        left: triggerBoundingBox.left + triggerBoundingBox.width + arrowWidth
       }
     case 'bottom':
       return {
-        top: triggerBoundingBox.top + triggerBoundingBox.height,
+        top: triggerBoundingBox.top + triggerBoundingBox.height + arrowHeight,
         left: triggerBoundingBox.left
       }
     case 'left':
       return {
         top: triggerBoundingBox.top,
-        left: triggerBoundingBox.left - contentBoundingBox.width
+        left: triggerBoundingBox.left - contentWidth - arrowWidth
       }
     case 'start':
       return {
         top: triggerBoundingBox.top,
-        left: (isRTL) ? triggerBoundingBox.left + triggerBoundingBox.width : triggerBoundingBox.left - contentBoundingBox.width
+        left: (isRTL) ? triggerBoundingBox.left + triggerBoundingBox.width + arrowWidth : triggerBoundingBox.left - contentWidth - arrowWidth
       }
     case 'end':
       return {
         top: triggerBoundingBox.top,
-        left: (isRTL) ? triggerBoundingBox.left - contentBoundingBox.width : triggerBoundingBox.left + triggerBoundingBox.width
+        left: (isRTL) ? triggerBoundingBox.left - contentWidth - arrowWidth : triggerBoundingBox.left + triggerBoundingBox.width + arrowWidth
       }
   }
 }
@@ -521,13 +572,14 @@ const calculatePopoverAlign = (
   align: PositionAlign,
   side: PositionSide,
   triggerBoundingBox: ReferenceCoordinates,
-  contentBoundingBox: DOMRect
+  contentWidth: number,
+  contentHeight: number
 ) => {
   switch (align) {
     case 'center':
-      return calculatePopoverCenterAlign(side, triggerBoundingBox, contentBoundingBox)
+      return calculatePopoverCenterAlign(side, triggerBoundingBox, contentWidth, contentHeight)
     case 'end':
-      return calculatePopoverEndAlign(side, triggerBoundingBox, contentBoundingBox)
+      return calculatePopoverEndAlign(side, triggerBoundingBox, contentWidth, contentHeight)
     case 'start':
     default:
       return { top: 0, left: 0 };
@@ -546,7 +598,8 @@ const calculatePopoverAlign = (
 const calculatePopoverEndAlign = (
   side: PositionSide,
   triggerBoundingBox: ReferenceCoordinates,
-  contentBoundingBox: DOMRect
+  contentWidth: number,
+  contentHeight: number
 ) => {
   switch (side) {
     case 'start':
@@ -554,7 +607,7 @@ const calculatePopoverEndAlign = (
     case 'left':
     case 'right':
       return {
-        top: -(contentBoundingBox.height - triggerBoundingBox.height),
+        top: -(contentHeight - triggerBoundingBox.height),
         left: 0
       }
     case 'top':
@@ -562,7 +615,7 @@ const calculatePopoverEndAlign = (
     default:
       return {
         top: 0,
-        left: -(contentBoundingBox.width - triggerBoundingBox.width)
+        left: -(contentWidth - triggerBoundingBox.width)
       }
   }
 }
@@ -579,7 +632,8 @@ const calculatePopoverEndAlign = (
 const calculatePopoverCenterAlign = (
   side: PositionSide,
   triggerBoundingBox: ReferenceCoordinates,
-  contentBoundingBox: DOMRect
+  contentWidth: number,
+  contentHeight: number
 ) => {
   switch (side) {
     case 'start':
@@ -587,7 +641,7 @@ const calculatePopoverCenterAlign = (
     case 'left':
     case 'right':
       return {
-        top: -((contentBoundingBox.height / 2) - (triggerBoundingBox.height / 2)),
+        top: -((contentHeight / 2) - (triggerBoundingBox.height / 2)),
         left: 0
       }
     case 'top':
@@ -595,7 +649,7 @@ const calculatePopoverCenterAlign = (
     default:
       return {
         top: 0,
-        left: -((contentBoundingBox.width / 2) - (triggerBoundingBox.width / 2))
+        left: -((contentWidth / 2) - (triggerBoundingBox.width / 2))
       }
   }
 }
@@ -615,7 +669,9 @@ export const calculateWindowAdjustment = (
   contentHeight: number,
   isRTL: boolean,
   safeAreaMargin: number,
-  triggerCoordinates?: ReferenceCoordinates
+  triggerCoordinates?: ReferenceCoordinates,
+  arrowTop: number = 0,
+  arrowLeft: number = 0
 ): PopoverStyles => {
   let left = coordLeft;
   let top = coordTop;
@@ -668,5 +724,5 @@ export const calculateWindowAdjustment = (
     }
   }
 
-  return { top, left, bottom, originX, originY, checkSafeAreaLeft, checkSafeAreaRight };
+  return { top, left, bottom, originX, originY, checkSafeAreaLeft, checkSafeAreaRight, arrowTop, arrowLeft };
 }
