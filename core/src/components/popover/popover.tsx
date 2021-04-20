@@ -13,6 +13,7 @@ import { iosLeaveAnimation } from './animations/ios.leave';
 import { mdEnterAnimation } from './animations/md.enter';
 import { mdLeaveAnimation } from './animations/md.leave';
 import { configureDismissInteraction, configureKeyboardInteraction, configureTriggerInteraction } from './utils';
+import { isPlatform } from '../../utils/platform';
 
 const CoreDelegate = () => {
   let Cmp: any;
@@ -472,7 +473,8 @@ export class Popover implements ComponentInterface, OverlayInterface {
           [mode]: true,
           'popover-translucent': this.translucent,
           'overlay-hidden': true,
-          'popover-interactive': presented
+          'popover-interactive': presented,
+          'popover-desktop': isPlatform('desktop')
         }}
         onIonPopoverDidPresent={onLifecycle}
         onIonPopoverWillPresent={onLifecycle}

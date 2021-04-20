@@ -11,8 +11,16 @@
   --backdrop-opacity: var(--ion-backdrop-opacity, 0.08);
 }
 
+:host(.popover-desktop) {
+  --box-shadow: #{$popover-ios-desktop-box-shadow};
+}
+
 .popover-content {
   @include border-radius($popover-ios-border-radius);
+}
+
+:host(.popover-desktop) .popover-content {
+  border: #{$popover-ios-desktop-border};
 }
 
 
