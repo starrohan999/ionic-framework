@@ -105,7 +105,16 @@ export const configureDismissInteraction = (
              */
             const target = ev.target as HTMLElement;
             const closestTrigger = target.closest('[data-ion-popover-trigger]');
-            if (closestTrigger === triggerEl) { return; }
+            if (closestTrigger === triggerEl) {
+              /**
+               * stopPropagation here so if the
+               * popover has dismissOnSelect="true"
+               * the popover does not dismiss since
+               * we just clicked a trigger element.
+               */
+              ev.stopPropagation();
+              return;
+            }
 
             popoverEl.dismiss(undefined, undefined, false);
           }

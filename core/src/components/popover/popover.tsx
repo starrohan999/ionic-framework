@@ -487,12 +487,12 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
         <div tabindex="0"></div>
 
-        <div class="popover-wrapper ion-overlay-wrapper">
+        <div
+          class="popover-wrapper ion-overlay-wrapper"
+          onClick={dismissOnSelect ? () => this.dismiss() : undefined}
+        >
           <div class="popover-arrow"></div>
-          <div
-            class="popover-content"
-            onClick={dismissOnSelect ? () => this.dismiss() : undefined}
-          >
+          <div class="popover-content">
             <slot></slot>
           </div>
         </div>
