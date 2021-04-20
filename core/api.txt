@@ -826,6 +826,7 @@ ion-picker,css-prop,--width
 ion-popover,scoped
 ion-popover,prop,alignment,"center" | "end" | "start",'start',false,false
 ion-popover,prop,animated,boolean,true,false,false
+ion-popover,prop,arrow,boolean,true,false,false
 ion-popover,prop,backdropDismiss,boolean,true,false,false
 ion-popover,prop,component,Function | HTMLElement | null | string,undefined,true,false
 ion-popover,prop,componentProps,undefined | { [key: string]: any; },undefined,false,false

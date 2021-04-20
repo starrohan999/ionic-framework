@@ -208,6 +208,14 @@ export class Popover implements ComponentInterface, OverlayInterface {
    */
   @Prop() isOpen = false;
 
+  /**
+   * If `true`, the popover will display an arrow
+   * that points at the `reference` when running in `ios` mode.
+   * Does not apply in `md` mode. When nesting popovers,
+   * the arrow is only displayed on the initial popover.
+   */
+  @Prop() arrow = true;
+
   @Watch('trigger')
   @Watch('triggerAction')
   onTriggerChange() {
@@ -253,10 +261,12 @@ export class Popover implements ComponentInterface, OverlayInterface {
      * not assign the default incrementing ID.
      */
     this.popoverId = (this.el.hasAttribute('id')) ? this.el.getAttribute('id')! : `ion-popover-${this.popoverIndex}`;
+
+    this.parentPopover = this.el.closest(`ion-popover:not(#${this.popoverId})`) as HTMLIonPopoverElement | null;
   }
 
   componentDidLoad() {
-    const parentPopover = this.parentPopover = this.el.closest(`ion-popover:not(#${this.popoverId})`) as HTMLIonPopoverElement | null;
+    const { parentPopover } = this;
 
     if (parentPopover) {
       addEventListener(parentPopover, 'ionPopoverWillDismiss', () => {
@@ -455,8 +465,8 @@ export class Popover implements ComponentInterface, OverlayInterface {
 
   render() {
     const mode = getIonMode(this);
-    const { onLifecycle, popoverId, parentPopover, dismissOnSelect, presented, side } = this;
-
+    const { onLifecycle, popoverId, parentPopover, dismissOnSelect, presented, side, arrow } = this;
+    const enableArrow = arrow && !parentPopover;
     return (
       <Host
         aria-modal="true"
@@ -491,7 +501,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
           class="popover-wrapper ion-overlay-wrapper"
           onClick={dismissOnSelect ? () => this.dismiss() : undefined}
         >
-          <div class="popover-arrow"></div>
+          {enableArrow && <div class="popover-arrow"></div>}
           <div class="popover-content">
             <slot></slot>
           </div>

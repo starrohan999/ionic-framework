@@ -1658,6 +1658,10 @@ export namespace Components {
          */
         "animated": boolean;
         /**
+          * If `true`, the popover will display an arrow that points at the `reference` when running in `ios` mode. Does not apply in `md` mode. When nesting popovers, the arrow is only displayed on the initial popover.
+         */
+        "arrow": boolean;
+        /**
           * If `true`, the popover will be dismissed when the backdrop is clicked.
          */
         "backdropDismiss": boolean;
@@ -5024,6 +5028,10 @@ declare namespace LocalJSX {
           * If `true`, the popover will animate.
          */
         "animated"?: boolean;
+        /**
+          * If `true`, the popover will display an arrow that points at the `reference` when running in `ios` mode. Does not apply in `md` mode. When nesting popovers, the arrow is only displayed on the initial popover.
+         */
+        "arrow"?: boolean;
         /**
           * If `true`, the popover will be dismissed when the backdrop is clicked.
          */
