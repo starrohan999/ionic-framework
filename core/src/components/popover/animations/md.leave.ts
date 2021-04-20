@@ -20,6 +20,6 @@ export const mdLeaveAnimation = (baseEl: HTMLElement): Animation => {
   return baseAnimation
     .addElement(baseEl)
     .easing('ease')
-    .duration(500)
+    .duration(150)
     .addAnimation([backdropAnimation, wrapperAnimation]);
 };
