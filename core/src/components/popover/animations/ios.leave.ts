@@ -20,6 +20,6 @@ export const iosLeaveAnimation = (baseEl: HTMLElement): Animation => {
   return baseAnimation
     .addElement(baseEl)
     .easing('ease')
-    .duration(500)
+    .duration(300)
     .addAnimation([backdropAnimation, wrapperAnimation]);
 };
