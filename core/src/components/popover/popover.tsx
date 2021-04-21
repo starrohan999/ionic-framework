@@ -197,7 +197,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
   /**
    * Describes how to align the popover content with the `reference` point.
    */
-  @Prop() alignment: PositionAlign = 'start';
+  @Prop() alignment: PositionAlign = 'center';
 
   /**
    * If `true`, the popover will open. If `false`, the popover will close.
