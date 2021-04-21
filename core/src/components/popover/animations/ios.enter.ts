@@ -1,6 +1,6 @@
 import { Animation } from '../../../interface';
 import { createAnimation } from '../../../utils/animation/animation';
-import { calculateWindowAdjustment, getPopoverDimensions, getPopoverPosition, getArrowDimensions } from '../utils';
+import { calculateWindowAdjustment, getArrowDimensions, getPopoverDimensions, getPopoverPosition } from '../utils';
 
 const POPOVER_IOS_BODY_PADDING = 5;
 

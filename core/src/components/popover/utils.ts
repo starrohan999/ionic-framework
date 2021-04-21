@@ -41,7 +41,7 @@ export interface PopoverStyles {
 export const getArrowDimensions = (
   arrowEl: HTMLElement | null
 ) => {
-  if (!arrowEl) return { arrowWidth: 0, arrowHeight: 0 };
+  if (!arrowEl) { return { arrowWidth: 0, arrowHeight: 0 }; }
   const { width, height } = arrowEl.getBoundingClientRect();
 
   return { arrowWidth: width, arrowHeight: height };
@@ -482,11 +482,15 @@ export const getPopoverPosition = (
   const top = coordinates.top + alignedCoordinates.top;
   const left = coordinates.left + alignedCoordinates.left;
 
-  const { arrowTop, arrowLeft } = calculateArrowPosition(side, arrowWidth, arrowHeight, top, left, contentWidth, contentHeight);
+  const { arrowTop, arrowLeft } = calculateArrowPosition(side, arrowWidth, arrowHeight, top, left, contentWidth, contentHeight, isRTL);
 
   return { top, left, referenceCoordinates, arrowTop, arrowLeft };
 }
 
+/**
+ * Calculates where the arrow positioning
+ * should be relative to the popover content.
+ */
 const calculateArrowPosition = (
   side: PositionSide,
   arrowWidth: number,
@@ -494,20 +498,36 @@ const calculateArrowPosition = (
   top: number,
   left: number,
   contentWidth: number,
-  contentHeight: number
+  contentHeight: number,
+  isRTL: boolean
 ) => {
-  arrowWidth;arrowHeight;
-  top;left;
-  contentWidth;contentHeight;
+  /**
+   * Note: When side is left, right, start, or end, the arrow is
+   * been rotated using a `transform`, so to move the arrow up or down
+   * by its dimension, you need to use `arrowWidth`.
+   */
+  const leftPosition = { arrowTop: top + (contentHeight / 2) - (arrowWidth / 2), arrowLeft: left + contentWidth - (arrowWidth / 2) };
+
+  /**
+   * Move the arrow to the left by arrowWidth and then
+   * again by half of its width because we have rotated
+   * the arrow using a transform.
+   */
+  const rightPosition = { arrowTop: top + (contentHeight / 2) - (arrowWidth / 2), arrowLeft: left - (arrowWidth * 1.5) }
+
   switch (side) {
     case 'top':
-      return { arrowTop: 0, arrowLeft: 0 }
+      return { arrowTop: top + contentHeight, arrowLeft: left + (contentWidth / 2) - (arrowWidth / 2) }
     case 'bottom':
-      return { arrowTop:0, arrowLeft: 0 }
+      return { arrowTop: top - arrowHeight, arrowLeft: left + (contentWidth / 2) - (arrowWidth / 2) }
     case 'left':
-      return { arrowTop: 0, arrowLeft: 0  }
+      return leftPosition;
     case 'right':
-      return { arrowTop: 0, arrowLeft: 0 }
+      return rightPosition;
+    case 'start':
+      return (isRTL) ? rightPosition : leftPosition;
+    case 'end':
+      return (isRTL) ? leftPosition : rightPosition;
     default:
       return { arrowTop: 0, arrowLeft: 0 }
   }
@@ -670,8 +690,8 @@ export const calculateWindowAdjustment = (
   isRTL: boolean,
   safeAreaMargin: number,
   triggerCoordinates?: ReferenceCoordinates,
-  arrowTop: number = 0,
-  arrowLeft: number = 0
+  arrowTop = 0,
+  arrowLeft = 0
 ): PopoverStyles => {
   let left = coordLeft;
   let top = coordTop;

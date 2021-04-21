@@ -76,19 +76,17 @@
 }
 
 :host(.popover-side-start) .popover-arrow {
-  transform: rotate(90deg);
-
   @include rtl() {
     transform: rotate(-90deg);
   }
+  transform: rotate(90deg);
 }
 
 :host(.popover-side-end) .popover-arrow {
-  transform: rotate(-90deg);
-
   @include rtl() {
     transform: rotate(90deg);
   }
+  transform: rotate(-90deg);
 }
 
 
