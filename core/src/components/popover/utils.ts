@@ -19,6 +19,8 @@ interface PopoverPosition {
   referenceCoordinates?: ReferenceCoordinates;
   arrowTop?: number;
   arrowLeft?: number;
+  originX: string;
+  originY: string;
 }
 
 export interface PopoverStyles {
@@ -484,7 +486,59 @@ export const getPopoverPosition = (
 
   const { arrowTop, arrowLeft } = calculateArrowPosition(side, arrowWidth, arrowHeight, top, left, contentWidth, contentHeight, isRTL);
 
-  return { top, left, referenceCoordinates, arrowTop, arrowLeft };
+  const { originX, originY } = calculatePopoverOrigin(side, align, isRTL);
+
+  return { top, left, referenceCoordinates, arrowTop, arrowLeft, originX, originY };
+}
+
+/**
+ * Determines the transform-origin
+ * of the popover animation so that it
+ * is in line with what the side and alignment
+ * prop values are. Currently only used
+ * with the MD animation.
+ */
+const calculatePopoverOrigin = (
+  side: PositionSide,
+  align: PositionAlign,
+  isRTL: boolean
+) => {
+  switch (side) {
+    case 'top':
+      return { originX: getOriginXAlignment(align), originY: 'bottom' }
+    case 'bottom':
+      return { originX: getOriginXAlignment(align), originY: 'top' }
+    case 'left':
+      return { originX: 'right', originY: getOriginYAlignment(align) }
+    case 'right':
+      return { originX: 'left', originY: getOriginYAlignment(align) }
+    case 'start':
+      return { originX: (isRTL) ? 'left' : 'right', originY: getOriginYAlignment(align) }
+    case 'end':
+      return { originX: (isRTL) ? 'right' : 'left', originY: getOriginYAlignment(align) }
+  }
+}
+
+const getOriginXAlignment = (align: PositionAlign) => {
+  switch (align) {
+    case 'start':
+      return 'left';
+    case 'center':
+      return 'center';
+    case 'end':
+      return 'right';
+  }
+}
+
+const getOriginYAlignment = (align: PositionAlign) => {
+  switch (align) {
+    case 'start':
+      return 'top';
+    case 'center':
+      return 'center';
+    case 'end':
+      return 'bottom';
+  }
 }
 
 /**
@@ -687,8 +741,9 @@ export const calculateWindowAdjustment = (
   bodyHeight: number,
   contentWidth: number,
   contentHeight: number,
-  isRTL: boolean,
   safeAreaMargin: number,
+  contentOriginX: string,
+  contentOriginY: string,
   triggerCoordinates?: ReferenceCoordinates,
   arrowTop = 0,
   arrowLeft = 0
@@ -696,8 +751,8 @@ export const calculateWindowAdjustment = (
   let left = coordLeft;
   let top = coordTop;
   let bottom;
-  let originX = isRTL ? 'right' : 'left';
-  let originY = 'top';
+  let originX = contentOriginX;
+  let originY = contentOriginY;
   let checkSafeAreaLeft = false;
   let checkSafeAreaRight = false;
   const triggerTop = triggerCoordinates ? triggerCoordinates.top + triggerCoordinates.height : bodyHeight / 2 - contentHeight / 2;

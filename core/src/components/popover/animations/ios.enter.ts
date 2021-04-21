@@ -21,12 +21,14 @@ export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation =>
 
   const defaultPosition = {
     top: bodyHeight / 2 - contentHeight / 2,
-    left: bodyWidth / 2 - contentWidth / 2
+    left: bodyWidth / 2 - contentWidth / 2,
+    originX: isRTL ? 'right' : 'left',
+    originY: 'top'
   }
 
   const results = getPopoverPosition(isRTL, contentWidth, contentHeight, arrowWidth, arrowHeight, reference, side, align, defaultPosition, trigger, ev);
 
-  const { originX, originY, top, left, bottom, checkSafeAreaLeft, checkSafeAreaRight, arrowTop, arrowLeft } = calculateWindowAdjustment(results.top, results.left, POPOVER_IOS_BODY_PADDING, bodyWidth, bodyHeight, contentWidth, contentHeight, isRTL, 25, results.referenceCoordinates, results.arrowTop, results.arrowLeft);
+  const { originX, originY, top, left, bottom, checkSafeAreaLeft, checkSafeAreaRight, arrowTop, arrowLeft } = calculateWindowAdjustment(results.top, results.left, POPOVER_IOS_BODY_PADDING, bodyWidth, bodyHeight, contentWidth, contentHeight, 25, results.originX, results.originY, results.referenceCoordinates, results.arrowTop, results.arrowLeft);
 
   const baseAnimation = createAnimation();
   const backdropAnimation = createAnimation();
