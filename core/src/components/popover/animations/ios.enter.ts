@@ -28,6 +28,8 @@ export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation =>
 
   const { originX, originY, top, left, bottom, checkSafeAreaLeft, checkSafeAreaRight, arrowTop, arrowLeft } = calculateWindowAdjustment(results.top, results.left, POPOVER_IOS_BODY_PADDING, bodyWidth, bodyHeight, contentWidth, contentHeight, isRTL, 25, results.referenceCoordinates, results.arrowTop, results.arrowLeft);
 
+  const adjustedForBounds = top !== results.top || left !== results.left || bottom !== undefined;
+
   const baseAnimation = createAnimation();
   const backdropAnimation = createAnimation();
   const wrapperAnimation = createAnimation();
@@ -73,9 +75,19 @@ export const iosEnterAnimation = (baseEl: HTMLElement, opts?: any): Animation =>
       contentEl.style.setProperty('left', `calc(${leftValue} + var(--offset-x, 0))`);
       contentEl.style.setProperty('transform-origin', `${originY} ${originX}`);
 
+      /**
+       * If popover is adjusted according to
+       * window bounds then we want to hide the
+       * arrow because it will no longer point
+       * to the reference point.
+       */
       if (arrowEl) {
-        arrowEl.style.setProperty('top', `calc(${arrowTop}px + var(--offset-y, 0))`);
-        arrowEl.style.setProperty('left', `calc(${arrowLeft}px + var(--offset-x, 0))`);
+        if (adjustedForBounds) {
+          arrowEl.style.setProperty('display', 'none');
+        } else {
+          arrowEl.style.setProperty('top', `calc(${arrowTop}px + var(--offset-y, 0))`);
+          arrowEl.style.setProperty('left', `calc(${arrowLeft}px + var(--offset-x, 0))`);
+        }
       }
     })
     .addAnimation([backdropAnimation, wrapperAnimation]);
