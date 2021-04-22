@@ -6,6 +6,7 @@ export { IonicVue } from './ionic-vue';
 
 export { IonBackButton } from './components/IonBackButton';
 export { IonPage } from './components/IonPage';
+export { IonPopover } from './components/IonPopover';
 export { IonRouterOutlet } from './components/IonRouterOutlet';
 export { IonTabButton } from './components/IonTabButton';
 export { IonTabs } from './components/IonTabs';
@@ -13,7 +14,6 @@ export { IonTabBar } from './components/IonTabBar';
 export { IonNav } from './components/IonNav';
 export { IonIcon } from './components/IonIcon';
 export { IonApp } from './components/IonApp';
-export { IonPopover } from './components/IonPopover';
 
 export * from './components/Overlays';
 

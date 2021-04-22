@@ -2,7 +2,7 @@ import { h, defineComponent, ref, onMounted } from 'vue';
 
 export const IonPopover = defineComponent({
   name: 'IonPopover',
-  emits: ['on-will-present', 'on-did-present', 'on-will-dismiss', 'on-did-dismiss'],
+  emits: ['on-did-dismiss', 'on-will-dismiss', 'on-did-present', 'on-will-present'],
   setup(_, { emit, attrs, slots }) {
     const popoverRef = ref();
     let shouldMount = ref(false);

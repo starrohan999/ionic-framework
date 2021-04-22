@@ -292,6 +292,7 @@ export default defineComponent({
     const setToastRef = (value: boolean) => isToastOpen.value = value;
     const setModalRef = (value: boolean) => isModalOpen.value = value;
     const setPopoverRef = (value: boolean, event: Event) => {
+    console.log('setting popover ref')
       popoverEvent.value = event;
       isPopoverOpen.value = value;
     }
