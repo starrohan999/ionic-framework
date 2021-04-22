@@ -97,7 +97,7 @@ export class Popover implements ComponentInterface, OverlayInterface {
   /**
    * The component to display inside of the popover.
    */
-  @Prop() component!: ComponentRef;
+  @Prop() component?: ComponentRef;
 
   /**
    * The data to pass to the popover component.

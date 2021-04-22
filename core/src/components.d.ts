@@ -1668,7 +1668,7 @@ export namespace Components {
         /**
           * The component to display inside of the popover.
          */
-        "component": ComponentRef;
+        "component"?: ComponentRef;
         /**
           * The data to pass to the popover component.
          */
@@ -5039,7 +5039,7 @@ declare namespace LocalJSX {
         /**
           * The component to display inside of the popover.
          */
-        "component": ComponentRef;
+        "component"?: ComponentRef;
         /**
           * The data to pass to the popover component.
          */

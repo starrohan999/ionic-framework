@@ -4,6 +4,7 @@ import {
 } from '@ionic/react';
 
 const PopoverContent: React.FC = () => {
+  console.log('content created')
   return (
     <IonContent class="ion-padding">
        HELLO!!!!
