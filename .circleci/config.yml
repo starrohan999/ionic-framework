@@ -87,6 +87,7 @@ jobs:
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
+            - core/node_modules
             - core/dist
             - core/components
             - core/css
@@ -467,12 +468,13 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-          command: CYPRESS_CACHE_FOLDER=/tmp/workspace/packages/vue/test-app npm install
+          command: CYPRESS_CACHE_FOLDER=/tmp/workspace/packages/vue/test-app/cypress_cache npm install
           working_directory: /tmp/workspace/packages/vue/test-app
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
-            - packages/vue/test-app
+            - packages/vue/test-app/node_modules
+            - packages/vue/test-app/cypress_cache
 
   test-vue-spec:
     <<: *defaults
