@@ -499,7 +499,7 @@ jobs:
           command: npm run sync
           working_directory: /tmp/workspace/packages/vue/test-app
       - run:
-          command: CYPRESS_CACHE_FOLDER=/tmp/workspace/packages/vue/test-app npm run test:e2e
+          command: CYPRESS_CACHE_FOLDER=/tmp/workspace/packages/vue/test-app/cypress_cache npm run test:e2e
           working_directory: /tmp/workspace/packages/vue/test-app
 
 workflows:
